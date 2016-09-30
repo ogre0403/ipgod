@@ -1,1 +1,2 @@
 # ipgod
+$ pip install schedule
