@@ -20,6 +20,9 @@ def main():
 
 if __name__ == "__main__":
     # Filter out non-necessary logging
+    print("123456")
+    """
     for handler in logging.root.handlers:
         handler.addFilter(logging.Filter('root'))
     main()
+    """
