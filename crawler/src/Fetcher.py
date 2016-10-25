@@ -42,6 +42,7 @@ class Fetcher(threading.Thread) :
         dataid = self.findUpdateDataID()
         for s in dataid:
             meta = Metadata.getMetaData(s)
+            #print(meta)
             for md in meta:
                 logger.debug(md.getResourceID() + " put to queue")
                 self.queue.put(md)
@@ -66,8 +67,8 @@ class Fetcher(threading.Thread) :
         datetime object value is equal to self.updateInterval ago
         """
         now = datetime.datetime.now()
-        return (now - datetime.timedelta(seconds=self.updateInterval)).strftime('%Y-%m-%d %H:%M:%S')
-
+        #return (now - datetime.timedelta(seconds=self.updateInterval)).strftime('%Y-%m-%d %H:%M:%S')
+        return "2016-10-18 20:23:12"
 
 
 
@@ -84,5 +85,7 @@ class Downloader(threading.Thread) :
             if not self.queue.empty():
                 # Get metadata item from queue, and execute download logic
                 item = self.queue.get()
-                item.download()
+                
+                # Get the flag to check whether the download task is OK or not
+                self.download_flag = item.download()
             # time.sleep(1)
