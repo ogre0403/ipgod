@@ -23,6 +23,9 @@ class Metadata(object):
         r = requests.get(const.METADATA_URL_PREFIX + dataid)
         x = json.loads(r.text)
         
+        if x.get("success") == False:
+            return []
+        
         Metadata.getLogFile(x)
         
         result = []
@@ -82,32 +85,46 @@ class Metadata(object):
             response = requests.get(self.downloadURL,stream=True)
             
             
-            if "zip" in self.downloadURL:
-                fileType = "zip"
-                print(self.downloadURL)
-            elif "csv" in self.downloadURL:
-                fileType = "csv"
-            elif "xml" in self.downloadURL:
-                fileType = "xml"
-            elif "txt" in self.downloadURL:
-                fileType = "txt"
-            elif "Content-Disposition" in response.headers:
-                fileType = response.headers.get("Content-Disposition")
-                fileType = fileType[fileType.rfind(".")+1:len(fileType)].rstrip("\"")
+            if "zip" in self.downloadURL.lower():
+                fileTypeFromURL = "zip"
+            elif "csv" in self.downloadURL.lower():
+                fileTypeFromURL = "csv"
+            elif "xml" in self.downloadURL.lower():
+                fileTypeFromURL = "xml"
+            elif "txt" in self.downloadURL.lower():
+                fileTypeFromURL = "txt"
             else:
-                fileType = response.headers.get("content-type","NA")
-                if fileType != "NA":
-                    if ";" in fileType:
-                        fileType = fileType[fileType.index("/")+1:fileType.index(";")]
-                    else:
-                        fileType = fileType[fileType.index("/")+1:len(fileType)]
-                        
-                    if fileType == "octet-stream":
-                        fileType = "zip"
+                fileTypeFromURL = "NA"     
+                
+            if "Content-Disposition" in response.headers:
+                fileTypeFromContentDesposition = response.headers.get("Content-Disposition")
+                fileTypeFromContentDesposition = fileTypeFromContentDesposition[fileTypeFromContentDesposition.rfind(".")+1:len(fileTypeFromContentDesposition)].rstrip("\"")
+            else:
+                fileTypeFromContentDesposition = "NA"
+                
+            if "content-type" in response.headers:
+                fileTypeFromContentType = response.headers.get("content-type","NA")
+                
+                if ";" in fileTypeFromContentType:
+                    fileTypeFromContentType = fileTypeFromContentType[fileTypeFromContentType.index("/")+1:fileTypeFromContentType.index(";")]
                 else:
-                    fileType = self.format
+                    fileTypeFromContentType = fileTypeFromContentType[fileTypeFromContentType.index("/")+1:len(fileTypeFromContentType)]
                     
-                    
+                if fileTypeFromContentType == "octet-stream" or fileTypeFromContentType == "x-zip":
+                    fileTypeFromContentType = "zip"
+            else:
+                fileTypeFromContentType = "NA"
+            
+            fileTypeFromFormat = self.format
+            
+            if fileTypeFromURL != "NA":
+                fileType = fileTypeFromURL
+            elif fileTypeFromContentDesposition != "NA":
+                fileType = fileTypeFromContentDesposition
+            elif fileTypeFromContentType != "NA":
+                fileType = fileTypeFromContentType
+            elif fileTypeFromFormat != "NA":
+                fileType = fileTypeFromFormat
 
             file_name = abspath + name+"." + fileType
             print(file_name)
@@ -146,7 +163,10 @@ class Metadata(object):
         return self.characterSetCode
     
     def getLogFile(x):
-        name = x["result"]["title"].replace("/","").rstrip()
+        
+        name = x["result"].get("title","NOtitle")
+        
+        name = name.replace("/","").rstrip()
         dir_name = x["result"]["organization"].rstrip()
         if not os.path.exists(dir_name):
             os.makedirs(dir_name)

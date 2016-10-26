@@ -42,7 +42,7 @@ class Fetcher(threading.Thread) :
         dataid = self.findUpdateDataID()
         for s in dataid:
             meta = Metadata.getMetaData(s)
-            #print(meta)
+            print(dataid)
             for md in meta:
                 logger.debug(md.getResourceID() + " put to queue")
                 self.queue.put(md)

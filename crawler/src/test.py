@@ -26,7 +26,7 @@ def main():
     log.debug("this is a test debug")
     
     #url = "http://140.120.15.162/home/test.html";
-    url = "http://data.gov.tw/api/v1/rest/dataset/382000000A-000136"
+    url = "http://data.gov.tw/api/v1/rest/dataset/313050000G-000001"
     url_modi = "http://data.gov.tw/api/v1/rest/dataset?modified=2016-10-18%2020:23:12"
     
     r = requests.get(url)
@@ -55,10 +55,12 @@ def main():
     #print(file_name)
     f = open(file_name, "w", encoding = "UTF-8")
     
-    #for clz, val in x.items():
-        #print(clz, val)
-    print(x["result"]["distribution"][0]["format"])
-    print(x["result"]["distribution"][1]["format"])
+    for clz, val in x.items():
+        print(clz,type(val))
+    print(x["result"]["distribution"])
+    
+    #print(x["result"]["distribution"][0]["format"])
+    #print(x["result"]["distribution"][1]["format"])
     
     for k, v in x["result"].items():
         # print(k,type(v))
@@ -79,9 +81,9 @@ def main():
         else:
             f.write("%-25s: %s\n" %(k,v))
     download_name = abspath + name + ".zip"
-    # print(x["result"]["organization"])
+    print("title",x["result"]["title"])
     
-    download_url = "http://www.ntbt.gov.tw/etwmain/download?sid=14f2a5235f3000006a40f74a70267f48"
+    download_url = "http://data.gcis.nat.gov.tw/od/file?oid=078DC656-8A7F-4D94-825E-55F75F8E4929"
     #download_url="http://data.gcis.nat.gov.tw/od/file?oid=01905E71-28D8-49ED-88CD-F3100F9DE5F2"
     #download file
     response = requests.get(download_url,stream=True)
@@ -103,7 +105,7 @@ def main():
     if fileType == "octet-stream":
         fileType = "zip"
     
-    print(fileType)
+    print("content-type:",fileType)
     
     with open(download_name, 'wb') as f:
         for chunk in response.iter_content(chunk_size=1024): 
