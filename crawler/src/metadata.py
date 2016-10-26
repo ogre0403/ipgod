@@ -41,7 +41,6 @@ class Metadata(object):
     
     def __init__(self, json, organization, title):
         
-        
         self.title = title.replace("/","").rstrip()
         self.organization = organization
         self.resourceID = json.get('resourceID')
@@ -53,7 +52,7 @@ class Metadata(object):
         if self.format == "NA":
             logger.warn("No format")
         self.resourceModified = json.get('resourceModified')
-
+    
         # Some data has no downloadURL field
         if 'downloadURL' in json:
             self.downloadURL = json['downloadURL']
