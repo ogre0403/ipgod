@@ -41,6 +41,7 @@ class Metadata(object):
     
     def __init__(self, json, organization, title):
         
+        
         self.title = title.replace("/","").rstrip()
         self.organization = organization
         self.resourceID = json.get('resourceID')
