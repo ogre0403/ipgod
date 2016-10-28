@@ -12,7 +12,6 @@ logger = logging.getLogger('root')
 
 
 class Metadata(object):
-
     
     def getMetaData(dataid):
         """
@@ -35,7 +34,6 @@ class Metadata(object):
             result.append(obj)
         
         #result.append(x["result"]["organization"])
-       
         return result
     
     
@@ -163,20 +161,33 @@ class Metadata(object):
         return self.characterSetCode
     
     def getLogFile(x):
-        
+        '''
+        This function will create a directory and a log file which under former directory.
+        A directory file will be named by the owner name while is the key "organization"'s value in json
+        A log file will be named by file title in json
+        '''
+        # get log file name
         name = x["result"].get("title","NOtitle")
-        
         name = name.replace("/","").rstrip()
+        
+        # get directory name
         dir_name = x["result"]["organization"].rstrip()
+        
+        # create a organization directory in current path
         if not os.path.exists(dir_name):
             os.makedirs(dir_name)
+        
+        # create a file title directory under organization directory 
         if not os.path.exists(dir_name+"\\"+name):
             os.makedirs(dir_name+"\\"+name)
+        
+        # abspath will be the log file's path
         abspath = os.path.abspath(dir_name)+"\\"+name+"\\"
+        
+        # get log file absolute path
         file_name = abspath + name + ".txt"
         
-        # print(file_name)
-        
+        # open a file IO stream and write result
         f = open(file_name, "w", encoding = "UTF-8")
         
         for k, v in x["result"].items():
@@ -186,12 +197,6 @@ class Metadata(object):
                 for j in v:
                     if type(j) is dict:
                         for distribution_key, distribution_value in j.items():
-                            if distribution_key == "downloadURL" and len(distribution_value) > 0:
-                                download_url = distribution_value
-                            # to get the download file type
-                            if distribution_key == "format" and len(distribution_value) > 0 and j.get("downloadURL") is not None:
-                                download_type = "."+distribution_value
-                            
                             f.write("%30s: %s\n"%(distribution_key, distribution_value))
                     else:
                         f.write("%30s\n"%(j))
