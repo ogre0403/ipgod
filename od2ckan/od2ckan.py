@@ -139,10 +139,10 @@ class import2ckan():
 	    logger.info("add package and resources " + self.package['name'])
 	    self.add_package()
 	    self.add_resource()
-	return
+	return True
 
 if __name__ == '__main__': 
-    jsonfile = 'testdata/data.txt'
+    jsonfile = 'testdata/A41000000G-000001/A41000000G-000001.json'
     odtw = odtw.od()
     data = odtw.read(jsonfile)
 
