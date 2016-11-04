@@ -4,6 +4,7 @@ import json
 import requests
 import logging
 import os
+import DBUtil
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -14,9 +15,10 @@ logging.basicConfig(#filename=LOGGING_FILE,
                     format='%(asctime)s [%(levelname)s] %(filename)s_%(lineno)d  : %(message)s')
 logger = logging.getLogger('root')
 
+
 class Metadata(object):
 
-    def getMetaData(dataid):
+    def getMetaData(dataid, timeStr):
         """
         Given dataset id, find out all download link
         return all available opendata matadata object
@@ -32,11 +34,12 @@ class Metadata(object):
         result = []
 
         for element in x["result"]["distribution"]:
-            obj = Metadata(element)
+            obj = Metadata(element, timeStr)
             result.append(obj)
         return result
 
-    def __init__(self, x):
+    def __init__(self, x, timeStr):
+        self.timeStr = timeStr
         self.resourceID = x.get('resourceID')
         # eg. resourceID = A59000000N-000229-001
         #     datasetID = A59000000N-000229
@@ -56,7 +59,6 @@ class Metadata(object):
         self.metadataSourceOfData = x['metadataSourceOfData']
         self.characterSetCode = x['characterSetCode']
 
-
     def getDataID(self):
         return self.dataid
 
@@ -65,7 +67,7 @@ class Metadata(object):
         Download data via self.downloadURL field
         return True if download complete, False if download fail
         """
-        if not hasattr(self, 'downloadURL') and hasattr(self, 'accessURL'):
+        if not hasattr(self, 'downloadURL') and not hasattr(self, 'accessURL'):
             logger.warn(self.resourceID + " NO download URL and NO access URL")
             return False
         else:
@@ -79,64 +81,73 @@ class Metadata(object):
             dir_name = self.datasetID+"/"
 
             abspath = config.DOWNLOAD_PATH+"/"+dir_name
-
-
-            response = requests.get(URL,stream=True,verify=False)
-            # TODO: Save download status in postgreSQL DB
-            # postgreSQL schema
-            # dataset-id(resourceID), download-timestamp, download-status
-
-            # todo: check download complete by status_code/4 does not make sense
+            
+            # to avoid the bad connection
+            response = requests.get(URL,stream=True,verify=False,headers={'Connection':'close'})
+            
             self.downloadStatusCode = response.status_code
-            if self.downloadStatusCode/100 >= 4:
+
+            
+            
+            # Save download status in postgreSQL DB
+            conn = DBUtil.createConnection()
+            DBUtil.insertDownloadStatus(conn, self.resourceID, self.timeStr, self.downloadStatusCode)
+            DBUtil.closeConnection(conn)
+            
+            # if status code != 200 will return false
+            if self.downloadStatusCode != 200:
                 return False
-
-            # TODO: ONLY support these 4 format?
-            # following resource URL can not be download
-            #  http://data.moi.gov.tw/MoiOD/System/DownloadFile.aspx?DATA=9DE2F2C7-F8C3-4D59-A3E7-D08E413C07E5
-            if "zip" in URL.lower():
-                fileTypeFromURL = "zip"
-            elif "csv" in URL.lower():
-                fileTypeFromURL = "csv"
-            elif "xml" in URL.lower():
-                fileTypeFromURL = "xml"
-            elif "txt" in URL.lower():
-                fileTypeFromURL = "txt"
+            
+            # use file type from json file's information
+            if self.format is not "NA":
+                file_name = abspath + name +"." + self.format.strip(";\"").lower()
             else:
-                fileTypeFromURL = "NA"
-
-            if "Content-Disposition" in response.headers:
-                fileTypeFromContentDesposition = response.headers.get("Content-Disposition")
-                fileTypeFromContentDesposition = fileTypeFromContentDesposition[fileTypeFromContentDesposition.rfind(".")+1:len(fileTypeFromContentDesposition)].rstrip("\"")
-            else:
-                fileTypeFromContentDesposition = "NA"
-
-            if "content-type" in response.headers:
-                fileTypeFromContentType = response.headers.get("content-type","NA")
-
-                if ";" in fileTypeFromContentType:
-                    fileTypeFromContentType = fileTypeFromContentType[fileTypeFromContentType.index("/")+1:fileTypeFromContentType.index(";")]
+                # TODO: ONLY support these 4 format?
+                # following resource URL can not be download
+                #  http://data.moi.gov.tw/MoiOD/System/DownloadFile.aspx?DATA=9DE2F2C7-F8C3-4D59-A3E7-D08E413C07E5
+                # Ensuring the file type is correct from url and request header.
+                if "zip" in URL.lower():
+                    fileTypeFromURL = "zip"
+                elif "csv" in URL.lower():
+                    fileTypeFromURL = "csv"
+                elif "xml" in URL.lower():
+                    fileTypeFromURL = "xml"
+                elif "txt" in URL.lower():
+                    fileTypeFromURL = "txt"
                 else:
-                    fileTypeFromContentType = fileTypeFromContentType[fileTypeFromContentType.index("/")+1:len(fileTypeFromContentType)]
+                    fileTypeFromURL = "NA"
 
-                if fileTypeFromContentType == "octet-stream" or fileTypeFromContentType == "x-zip":
-                    fileTypeFromContentType = "zip"
-            else:
-                fileTypeFromContentType = "NA"
+                if "Content-Disposition" in response.headers:
+                    fileTypeFromContentDesposition = response.headers.get("Content-Disposition")
+                    fileTypeFromContentDesposition = fileTypeFromContentDesposition[fileTypeFromContentDesposition.rfind(".")+1:len(fileTypeFromContentDesposition)].rstrip("\"")
+                else:
+                    fileTypeFromContentDesposition = "NA"
 
-            fileTypeFromFormat = self.format
+                if "content-type" in response.headers:
+                    fileTypeFromContentType = response.headers.get("content-type","NA")
 
-            if fileTypeFromURL != "NA":
-                fileType = fileTypeFromURL
-            elif fileTypeFromContentDesposition != "NA":
-                fileType = fileTypeFromContentDesposition
-            elif fileTypeFromContentType != "NA":
-                fileType = fileTypeFromContentType
-            elif fileTypeFromFormat != "NA":
-                fileType = fileTypeFromFormat
+                    if ";" in fileTypeFromContentType:
+                        fileTypeFromContentType = fileTypeFromContentType[fileTypeFromContentType.index("/")+1:fileTypeFromContentType.index(";")]
+                    else:
+                        fileTypeFromContentType = fileTypeFromContentType[fileTypeFromContentType.index("/")+1:len(fileTypeFromContentType)]
 
-            file_name = abspath + name +"." + fileType.strip(";\"")
+                    if fileTypeFromContentType == "octet-stream" or fileTypeFromContentType == "x-zip":
+                        fileTypeFromContentType = "zip"
+                else:
+                    fileTypeFromContentType = "NA"
 
+                fileTypeFromFormat = self.format
+
+                if fileTypeFromURL != "NA":
+                    fileType = fileTypeFromURL
+                elif fileTypeFromContentDesposition != "NA":
+                    fileType = fileTypeFromContentDesposition
+                elif fileTypeFromContentType != "NA":
+                    fileType = fileTypeFromContentType
+                elif fileTypeFromFormat != "NA":
+                    fileType = fileTypeFromFormat
+                
+            
             with open(file_name, 'wb') as f:
                 for chunk in response.iter_content(chunk_size=1024):
                     if chunk:
