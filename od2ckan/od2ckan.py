@@ -49,40 +49,49 @@ class import2ckan():
 	return
 
     def add_package(self):
-        self.ckan.action.package_create(
-	    name = self.package['name'].lower(),
-	    title = self.package['title'],
-	    owner_org = self.package['owner_org'],
-	    notes = self.package['notes'],
-	    type = self.package['type'],
-	    last_modified = self.package['last_modified'],
-	    #license_id = self.package['license_id'],
-	    author = self.package['author'],
-	    author_email = self.package['author_email'],
-	    tags = self.package['tag'],
-	    extras = self.package['extras']
-        )
-
-	return
+	try:
+            self.ckan.action.package_create(
+		name = self.package['name'].lower(),
+		title = self.package['title'],
+		owner_org = self.package['owner_org'],
+		notes = self.package['notes'],
+		type = self.package['type'],
+		last_modified = self.package['last_modified'],
+		#license_id = self.package['license_id'],
+		author = self.package['author'],
+		author_email = self.package['author_email'],
+		tags = self.package['tag'],
+		extras = self.package['extras']
+            )
+	    res = {self.package['name']:True}
+	except:
+	    res = {self.package['name']:False}
+	return res
 
     def add_resource(self):
 
+	rres = {}
 	for res in self.package['resources']:
 	    rfile = self.package['basepath']+'/'+res['resourceid']+'.'+res['format'].lower()
-	    if self.check_resource(res['resourceid'].lower()) == True:
-		logger.info("resource %s exist" % res['resourceid'])
-	    else:
-	        self.ckan.action.resource_create(
-	            package_id=self.package['name'].lower(),
-	            url=res['resourceid'].lower(),
-	            description=res['resourcedescription'],
-	            format=res['format'].lower(),
-	            name=res['resourceid'].lower(),
-	            last_modified=res['resourcemodified'],
-		    upload=open(rfile, 'rb'),
-	        )
-		logger.info("resource added %s" % res['resourceid'])
-	return
+	    rid = res['resourceid']
+	    try:
+		if self.check_resource(res['resourceid'].lower()) == True:
+		    logger.info("resource %s exist" % res['resourceid'])
+		else:
+		    self.ckan.action.resource_create(
+			package_id=self.package['name'].lower(),
+			url=res['resourceid'].lower(),
+			description=res['resourcedescription'],
+			format=res['format'].lower(),
+			name=res['resourceid'].lower(),
+			last_modified=res['resourcemodified'],
+			upload=open(rfile, 'rb'),
+		    )
+		    logger.info("resource added %s" % res['resourceid'])
+		rres[rid] = True
+	    except:
+		rres[rid] = False
+	return rres
 
     def add_organization(self):
 	self.ckan.action.organization_create(
@@ -105,25 +114,29 @@ class import2ckan():
 	return
 
     def update_package(self):
-        self.ckan.action.package_patch(
-	    id = self.package['name'].lower(),
-	    name = self.package['name'].lower(),
-	    title = self.package['title'],
-	    owner_org = self.package['owner_org'],
-	    notes = self.package['notes'],
-	    type = self.package['type'],
-	    last_modified = self.package['last_modified'],
-	    #license_id = self.package['license_id'],
-	    author = self.package['author'],
-	    author_email = self.package['author_email'],
-	    tags = self.package['tag'],
-	    extras = self.package['extras']
-        )
-
-	return
+	try:
+	    self.ckan.action.package_patch(
+		id = self.package['name'].lower(),
+		name = self.package['name'].lower(),
+		title = self.package['title'],
+		owner_org = self.package['owner_org'],
+		notes = self.package['notes'],
+		type = self.package['type'],
+		last_modified = self.package['last_modified'],
+		#license_id = self.package['license_id'],
+		author = self.package['author'],
+		author_email = self.package['author_email'],
+		tags = self.package['tag'],
+		extras = self.package['extras']
+	    )
+	    res = {self.package['name']:True}
+	except:
+	    res = {self.package['name']:False}
+	return res
 
     def commit(self, data):
 	self.package = data
+	ckan_res = {}
 	if self.check_organization() == False:
 	    logger.info("add organization " + self.package['org']['name'])
 	    self.add_organization()
@@ -133,13 +146,14 @@ class import2ckan():
 	
 	if self.check_package() == True:
 	    logger.info("update package and add resources " + self.package['name'])
-	    self.update_package()
-	    self.add_resource()
+	    pres = self.update_package()
+	    rres = self.add_resource()
 	else:
 	    logger.info("add package and resources " + self.package['name'])
-	    self.add_package()
-	    self.add_resource()
-	return True
+	    pres = self.add_package()
+	    rres = self.add_resource()
+	ckan_res = {'package':pres, 'resources':rres}
+	return ckan_res
 
 if __name__ == '__main__': 
     jsonfile = 'testdata/A41000000G-000001/A41000000G-000001.json'
@@ -152,4 +166,5 @@ if __name__ == '__main__':
     package['basepath'] = od_data_path
     put2ckan = import2ckan()
     res = put2ckan.commit(package)
+    print res
 

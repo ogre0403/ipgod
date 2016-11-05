@@ -23,7 +23,7 @@ class ipgoddb():
     def get_pkgs(self):
         try:
             #self.cur.execute("SELECT package_name, status, datetime from import where  datetime > CURRENT_TIMESTAMP - INTERVAL '6000 secs' and status=200")
-            self.cur.execute("SELECT resource_id from ckan_download  where status=200 and processed=FALSE")
+            self.cur.execute("SELECT package_name, fileid from ckan_download  where status=200 and processed=FALSE")
         except:
             logger.warn("select error")
         pkgs = []
@@ -33,9 +33,9 @@ class ipgoddb():
             pkgs.append(pkg)
         return pkgs
 
-    def import_done(self, package):
+    def import_done(self, package, fileid):
         try:
-            self.cur.execute("UPDATE ckan_download SET processed=TRUE where resource_id like %s", (package,))
+            self.cur.execute("UPDATE ckan_download SET processed=TRUE where package_name like %s and fileid like %s", (package, fileid))
             self.conn.commit()
         except:
             logger.warn("import done error")

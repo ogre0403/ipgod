@@ -34,20 +34,25 @@ if __name__ == '__main__':
             data = odtwdata.read(jsonfile)
 
             ckmap = map2ckan.mapod2ckan()
-            package = ckmap.map(data) 
+            package = ckmap.map(data)
             od_data_path = os.path.dirname(os.path.realpath(jsonfile))
             package['basepath'] = od_data_path
             put2ckan = od2ckan.import2ckan()
             try:
 		res = put2ckan.commit(package)
 	    except:
-		res = False
-            if res == True:
-                idb.update_pkg(pkg, 1)
-		idb.import_done(pkg)
-            else:
-                error = "error"
+                error = "unknow error"
                 idb.update_pkg(pkg, 0)
                 idb.log_package(pkg, error)
+	    print res
+	    if res['package'][pkg] == True:
+                idb.update_pkg(pkg, 1)
+		res_data = res['resources']
+		for fileid, status in res_data.items():
+		    rids = fileid.split('-')
+		    rid = rids[-1]
+		    print "%s %s %s" % (pkg, rid, status)
+		    if status == True:
+			idb.import_done(pkg, rid)
 	time.sleep(5)
 
