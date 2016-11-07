@@ -62,16 +62,22 @@ class Metadata(object):
     def getDataID(self):
         return self.dataid
     
-    def download(self):
+    def download(self, URLType):
         # TODO: implement resource download logic
         """
         Download data via self.downloadURL field
         return True if download complete, False if download fail
+        
+        if URLType == 0, URL is downloadURL. else if URLType is 1, URL is accessURL
         """
-        if not hasattr(self, 'downloadURL'):
+        if not hasattr(self, 'downloadURL') and hasattr(self, 'accessURL'):
             logger.warn(self.resourceID + " NO download URL")
             return False
         else:
+            if URLType == 0:
+                URL = self.downloadURL
+            elif URLType == 1:
+                URL = self.accessURL
             logger.info("download from " + self.downloadURL)
             
             name = self.resourceID.replace("/","")
@@ -80,16 +86,16 @@ class Metadata(object):
             abspath = os.path.abspath(dir_name)+"\\"
             
             
-            response = requests.get(self.downloadURL,stream=True)
+            response = requests.get(URL,stream=True)
             
             
-            if "zip" in self.downloadURL.lower():
+            if "zip" in sURL.lower():
                 fileTypeFromURL = "zip"
-            elif "csv" in self.downloadURL.lower():
+            elif "csv" in URL.lower():
                 fileTypeFromURL = "csv"
-            elif "xml" in self.downloadURL.lower():
+            elif "xml" in URL.lower():
                 fileTypeFromURL = "xml"
-            elif "txt" in self.downloadURL.lower():
+            elif "txt" in URL.lower():
                 fileTypeFromURL = "txt"
             else:
                 fileTypeFromURL = "NA"     
