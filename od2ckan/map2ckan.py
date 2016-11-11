@@ -1,6 +1,7 @@
 #!/bin/python
 # -*- coding: utf-8 -*-
 import organization_map
+import hashlib
 
 class mapod2ckan():
     def __init__(self):
@@ -13,19 +14,30 @@ class mapod2ckan():
 
     def map_tag_params(self, key, value):
 	for keyword in value:
-	    testkeyword = keyword.encode('utf-8')
-	    if testkeyword.isalpha() == True:
-		testkeyword = testkeyword.lower()
-		testkeyword = testkeyword.replace(" ", "_")
-		tagdata={'name':testkeyword.lower()}
-		self.package['tag'].append(tagdata)
-	    #else:
-		#map_package_extras(k, v)
+	# mark for create vocabulary tags
+	#    testkeyword = keyword.encode('utf-8')
+	#    if testkeyword.isalpha() == True:
+	#	testkeyword = testkeyword.lower()
+	#	testkeyword = testkeyword.replace(" ", "_")
+	#	tagdata={'name':testkeyword.lower()}
+	#	self.package['tag'].append(tagdata)
+	#    else:
+	#	tagdata={'name':testkeyword}
+	#	self.package['tag'].append(tagdata)
+	# and thsi is free tags
+	    tagdata={'name':keyword}
+	    self.package['tag'].append(tagdata)
 
     def map_organization_params(self, key, value):
 	if key == 'organization':
 	    org = organization_map.organization_name()
 	    owner_org = org.search(value.encode('utf8'))
+	    if owner_org == None:
+		m = hashlib.md5()
+		m.update(value.encode('utf-8'))
+		owner_org = m.hexdigest()[:10]
+
+	    print owner_org
 	    self.package['owner_org'] = owner_org
 	    self.package['org']['name'] = owner_org
 	    self.package['org']['title'] = value.encode('utf-8')

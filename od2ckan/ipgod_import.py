@@ -9,6 +9,7 @@ import logging
 import time
 import datetime
 import ipgodDB
+import ConfigParser
 
 LOGGING_FILE = 'ipgod-od2ckan.log'
 logging.basicConfig(filename=LOGGING_FILE,
@@ -16,9 +17,13 @@ logging.basicConfig(filename=LOGGING_FILE,
                     format='%(asctime)s [%(levelname)s] %(filename)s_%(lineno)d  : %(message)s')
 logger = logging.getLogger('root') 
 
+config = ConfigParser.ConfigParser()
+config.read('config.ini')
+
+
 if __name__ == '__main__':
     idb = ipgodDB.ipgoddb()
-    rootpath="./testdata"
+    rootpath=config.get('od2ckan', 'root_path')
     while True:
 	error=''
         pkgs = idb.get_pkgs()
