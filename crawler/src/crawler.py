@@ -1,14 +1,14 @@
 from Fetcher import Fetcher, Downloader
-import Queue
+import queue
 import logging
 
 def main():
 
     # create share queue
-    SHARE_Q = Queue.Queue()
+    SHARE_Q = queue.Queue()
 
     # Start Fetcher fetch new metadata, and put into share queue
-    fetcher = Fetcher(60, SHARE_Q)
+    fetcher = Fetcher(5, SHARE_Q)
     fetcher.start()
 
     # Start a downloader, get one metadata from queue,
@@ -20,6 +20,8 @@ def main():
 
 if __name__ == "__main__":
     # Filter out non-necessary logging
+    
     for handler in logging.root.handlers:
         handler.addFilter(logging.Filter('root'))
     main()
+    
