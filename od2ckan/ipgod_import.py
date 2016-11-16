@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import odtw
 import map2ckan
-import tockan
 import od2ckan
 import os
 import logging
