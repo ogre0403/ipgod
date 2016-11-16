@@ -104,9 +104,6 @@ class Metadata(object):
             if self.format is not "NA":
                 file_name = abspath + name +"." + self.format.strip(";\"").lower()
             else:
-                # TODO: ONLY support these 4 format?
-                # following resource URL can not be download
-                #  http://data.moi.gov.tw/MoiOD/System/DownloadFile.aspx?DATA=9DE2F2C7-F8C3-4D59-A3E7-D08E413C07E5
                 # Ensuring the file type is correct from url and request header.
                 if "zip" in URL.lower():
                     fileTypeFromURL = "zip"
