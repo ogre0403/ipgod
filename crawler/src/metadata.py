@@ -63,7 +63,6 @@ class Metadata(object):
         return self.dataid
     
     def download(self, URLType):
-        # TODO: implement resource download logic
         """
         Download data via self.downloadURL field
         return True if download complete, False if download fail
@@ -87,9 +86,11 @@ class Metadata(object):
             
             
             response = requests.get(URL,stream=True)
+            # TODO: Save download status in postgreSQL DB
+            # postgreSQL schema
+            # dataset-id, download-timestamp, download-status
             
-            
-            if "zip" in sURL.lower():
+            if "zip" in URL.lower():
                 fileTypeFromURL = "zip"
             elif "csv" in URL.lower():
                 fileTypeFromURL = "csv"
@@ -167,6 +168,9 @@ class Metadata(object):
         return self.characterSetCode
     
     def getLogFile(x):
+        #TODO: Just save the JSON object
+        # Just save the JSON object as a json file which is entitled by datasetID
+        # eg. A59000000N-000229.json
         '''
         This function will create a directory and a log file which under former directory.
         A directory file will be named by the owner name while is the key "organization"'s value in json
