@@ -4,6 +4,7 @@ import requests
 import logging
 import os
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+from PostgresSQL import PostgresSQL
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
@@ -88,15 +89,21 @@ class Metadata(object):
                         
             abspath = const.DOWNLOAD_PATH+"/"+dir_name
             
-            
             response = requests.get(URL,stream=True,verify=False)
             # TODO: Save download status in postgreSQL DB
             # postgreSQL schema
             # dataset-id(resourceID), download-timestamp, download-status
             
+            
             self.downloadStatusCode = response.status_code
+            
+            res = PostgresSQL(const.host, const.dbname, const.user, const.password)
+            res.insertData(self.resourceID, self.downloadStatusCode)
+            
             if self.downloadStatusCode/100 >= 4:
                 return False
+            
+            
             
             if "zip" in URL.lower():
                 fileTypeFromURL = "zip"
