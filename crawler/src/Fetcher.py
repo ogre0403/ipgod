@@ -9,31 +9,48 @@ import logging
 import datetime
 
 LOGGING_FILE = 'ipgod.log'
-logging.basicConfig(#filename=LOGGING_FILE,
-                    level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s] %(filename)s_%(lineno)d  : %(message)s')
+logging.basicConfig(  # filename=LOGGING_FILE,
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(filename)s_%(lineno)d  : %(message)s')
 logger = logging.getLogger('root')
 
 
-
-
-class Fetcher(threading.Thread) :
+class Fetcher(threading.Thread):
     """
     Fetcher thread get metadata of newly updated opendata.
 
     """
 
-    def __init__(self, sec, queue) :
+    def __init__(self, queue, sec=-1):
         """
-        sec: interval to fetch updated metadata
         queue: shared queue between Fetcher and Downloader
+        sec: interval to fetch updated metadata, default is -1,
+            means not get new data periodically.
         """
         super(Fetcher, self).__init__()
         self.queue = queue
         self.updateInterval = sec
-        schedule.every(self.updateInterval).seconds.do(self.fetchNewMetadata)
+        if self.updateInterval > 0:
+            schedule.every(self.updateInterval).seconds.do(self.dummy)
 
-    def run(self) :
+    def dummy(self):
+        """
+        dummy function for test
+        """
+        logger.info(str(threading.get_ident()) + " do repeat")
+
+    def process_history(self):
+        # TODO
+        """
+        process history data since last fetch
+        """
+        logger.info(str(threading.get_ident()) + " process hisotry")
+
+    def run(self):
+        if self.updateInterval == -1:
+            self.process_history()
+            return
+
         while True:
             schedule.run_pending()
             time.sleep(1)
@@ -59,7 +76,6 @@ class Fetcher(threading.Thread) :
         x = json.loads(r.text)
         return x['result']
 
-
     def buildQueryTimeStr(self):
         """
         build query time string with format yyyy-mm-dd hh:mm:ss
@@ -69,23 +85,3 @@ class Fetcher(threading.Thread) :
         now = datetime.datetime.now()
         return (now - datetime.timedelta(seconds=self.updateInterval)).strftime('%Y-%m-%d %H:%M:%S')
         # return "2016-10-18 20:23:12"
-
-
-
-class Downloader(threading.Thread) :
-    def __init__(self,  queue) :
-        """
-        queue: shared queue between Fetcher and Downloader
-        """
-        super(Downloader, self).__init__()
-        self.queue = queue
-
-    def run(self) :
-        while True:
-            if not self.queue.empty():
-                # Get metadata item from queue, and execute download logic
-                item = self.queue.get()
-                
-                # Get the flag to check whether the download task is OK or not
-                self.download_flag = item.download()
-            # time.sleep(1)
