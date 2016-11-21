@@ -1,15 +1,23 @@
-from Fetcher import Fetcher, Downloader
+from Fetcher import Fetcher
+from Downloader import Downloader
 import queue
 import logging
+import config
+
 
 def main():
-
     # create share queue
     SHARE_Q = queue.Queue()
 
+    # According to configuration, start a thread for fetch
+    # history data since last fetch or not.
+    if (config.FetchHistory):
+        historyFetcher = Fetcher(SHARE_Q)
+        historyFetcher.start()
+
     # Start Fetcher fetch new metadata, and put into share queue
-    fetcher = Fetcher(600, SHARE_Q)
-    fetcher.start()
+    updateFetcher = Fetcher(SHARE_Q, 5)
+    updateFetcher.start()
 
     # Start a downloader, get one metadata from queue,
     # then download open data and archive into ckan
@@ -17,11 +25,9 @@ def main():
     downloader.start()
 
 
-
 if __name__ == "__main__":
     # Filter out non-necessary logging
-    
+
     for handler in logging.root.handlers:
         handler.addFilter(logging.Filter('root'))
     main()
-    
