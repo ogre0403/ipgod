@@ -67,8 +67,8 @@ class Fetcher(threading.Thread) :
         datetime object value is equal to self.updateInterval ago
         """
         now = datetime.datetime.now()
-        return (now - datetime.timedelta(seconds=self.updateInterval)).strftime('%Y-%m-%d %H:%M:%S')
-        # return "2016-10-18 20:23:12"
+        # return (now - datetime.timedelta(seconds=self.updateInterval)).strftime('%Y-%m-%d %H:%M:%S')
+        return "2016-10-18 20:23:12"
 
 
 
