@@ -8,7 +8,7 @@ def main():
     SHARE_Q = queue.Queue()
 
     # Start Fetcher fetch new metadata, and put into share queue
-    fetcher = Fetcher(5, SHARE_Q)
+    fetcher = Fetcher(600, SHARE_Q)
     fetcher.start()
 
     # Start a downloader, get one metadata from queue,
