@@ -1,5 +1,12 @@
 from metadata import Metadata
 import threading
+import logging
+
+LOGGING_FILE = 'ipgod.log'
+logging.basicConfig(  # filename=LOGGING_FILE,
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(filename)s_%(lineno)d  : %(message)s')
+logger = logging.getLogger('root')
 
 
 class Downloader(threading.Thread):
@@ -17,5 +24,7 @@ class Downloader(threading.Thread):
                 item = self.queue.get()
 
                 # Get the flag to check whether the download task is OK or not
-                self.download_flag = item.download()
-                # time.sleep(1)
+                try:
+                    self.download_flag = item.download()
+                except:
+                    logger.error("Download " + item.getResourceID() + " ERROR!!!")

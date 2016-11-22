@@ -31,7 +31,7 @@ class Fetcher(threading.Thread):
         self.queue = queue
         self.updateInterval = sec
         if self.updateInterval > 0:
-            schedule.every(self.updateInterval).seconds.do(self.dummy)
+            schedule.every(self.updateInterval).seconds.do(self.fetchNewMetadata)
 
     def dummy(self):
         """
@@ -84,4 +84,6 @@ class Fetcher(threading.Thread):
         """
         now = datetime.datetime.now()
         return (now - datetime.timedelta(seconds=self.updateInterval)).strftime('%Y-%m-%d %H:%M:%S')
-        # return "2016-10-18 20:23:12"
+
+        # Use a fixed time String for testing
+        # return "2016-11-22 12:00:00"
