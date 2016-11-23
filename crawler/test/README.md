@@ -32,9 +32,10 @@ CREATE TABLE ckan_download (
 );
 
 --- Insert Testing data with linux timestamp
-INSERT INTO ckan_download VALUES ('A59000000N-000229-001',　TIMESTAMP 'epoch' + 1479700800 * INTERVAL '1 second', 200);
-INSERT INTO ckan_download VALUES ('A59000000N-000229-002',　TIMESTAMP 'epoch' + 1479700801 * INTERVAL '1 second', 404);
-INSERT INTO ckan_download VALUES ('A59000000N-000229-003',　TIMESTAMP 'epoch' + 1479700802 * INTERVAL '1 second', 405);
+INSERT INTO ckan_download VALUES ('A59000000N-000229-001', TIMESTAMP 'epoch' + 1479700800 * INTERVAL '1 second', 200);
+INSERT INTO ckan_download VALUES ('A59000000N-000229-002', TIMESTAMP 'epoch' + 1479700801 * INTERVAL '1 second', 404);
+INSERT INTO ckan_download VALUES ('A59000000N-000229-003', TIMESTAMP 'epoch' + 1479700802 * INTERVAL '1 second', 405);
+INSERT INTO ckan_download VALUES ('A59000000N-000229-004', TIMESTAMP '2016-11-22 12:00:03' at time zone 'Asia/Taipei', 405);
 
 --- Select data and convert download_time to UTC+8(i.e. Asia/Taipei) time zone. 
 SELECT resource_id, download_time at time zone 'Asia/Taipei' , status  FROM ckan_download;
