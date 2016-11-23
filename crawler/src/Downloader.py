@@ -26,5 +26,5 @@ class Downloader(threading.Thread):
                 # Get the flag to check whether the download task is OK or not
                 try:
                     self.download_flag = item.download()
-                except:
-                    logger.error("Download " + item.getResourceID() + " ERROR!!!")
+                except Exception as e:
+                    logging.exception("Download " + item.getResourceID() + " ERROR!!!")
