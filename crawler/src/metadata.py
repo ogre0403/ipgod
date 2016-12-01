@@ -67,7 +67,7 @@ class Metadata(object):
         Download data via self.downloadURL field
         return True if download complete, False if download fail
         """
-        if not hasattr(self, 'downloadURL') and hasattr(self, 'accessURL'):
+        if not hasattr(self, 'downloadURL') and not hasattr(self, 'accessURL'):
             logger.warn(self.resourceID + " NO download URL and NO access URL")
             return False
         else:
@@ -97,12 +97,12 @@ class Metadata(object):
             DBUtil.closeConnection(conn)
             
             # if status code = 404 or other error code, such as server error, it will return false
-            if self.downloadStatusCode >= 400:
+            if self.downloadStatusCode != 200:
                 return False
             
             # use file type from json file's information
             if self.format is not "NA":
-                file_name = abspath + name +"." + self.format.strip(";\"")
+                file_name = abspath + name +"." + self.format.strip(";\"").lower()
             else:
                 # TODO: ONLY support these 4 format?
                 # following resource URL can not be download
