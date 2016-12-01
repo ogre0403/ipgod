@@ -58,7 +58,7 @@ class Fetcher(threading.Thread):
     def fetchNewMetadata(self):
         dataid = self.findUpdateDataID()
         for s in dataid:
-            meta = Metadata.getMetaData(s)
+            meta = Metadata.getMetaData(s,self.timeStr)
             logger.debug(dataid)
             for md in meta:
                 logger.debug(md.getResourceID() + " put to queue")
@@ -70,9 +70,9 @@ class Fetcher(threading.Thread):
 
         return array contains dataset id
         """
-        timeStr = self.buildQueryTimeStr()
-        logger.info("Fetch new metadata since " + timeStr)
-        r = requests.get(const.MODIFIED_URL_PREFIX + timeStr)
+        self.timeStr = self.buildQueryTimeStr()
+        logger.info("Fetch new metadata since " + self.timeStr)
+        r = requests.get(const.MODIFIED_URL_PREFIX + self.timeStr)
         x = json.loads(r.text)
         return x['result']
 
@@ -86,4 +86,4 @@ class Fetcher(threading.Thread):
         return (now - datetime.timedelta(seconds=self.updateInterval)).strftime('%Y-%m-%d %H:%M:%S')
 
         # Use a fixed time String for testing
-        # return "2016-11-22 12:00:00"
+        # return "2016-12-01 11:30:00"
