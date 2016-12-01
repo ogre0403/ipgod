@@ -89,14 +89,12 @@ class Metadata(object):
 
             
             
-            # TODO: Save download status in postgreSQL DB
-            # postgreSQL schema
-            # dataset-id(resourceID), download-timestamp, download-status
+            # Save download status in postgreSQL DB
             conn = DBUtil.createConnection()
             DBUtil.insertDownloadStatus(conn, self.resourceID, self.timeStr, self.downloadStatusCode)
             DBUtil.closeConnection(conn)
             
-            # if status code = 404 or other error code, such as server error, it will return false
+            # if status code != 200 will return false
             if self.downloadStatusCode != 200:
                 return False
             
