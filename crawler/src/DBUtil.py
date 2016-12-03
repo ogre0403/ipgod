@@ -5,9 +5,7 @@ import logging
 
 
 q_string1_template = "select max(download_time at time zone 'Asia/Taipei') as last from {} "
-q_string2_template = "INSERT INTO {} VALUES ( '{}', TIMESTAMP '{}' at time zone 'Asia/Taipei', {})"
-
-query_string_template = "INSERT INTO {} VALUES ( '{}', '{}',TIMESTAMP '{}' at time zone 'Asia/Taipei', {}, False)"
+q_string2_template = "INSERT INTO {} VALUES ( '{}', '{}',TIMESTAMP '{}' at time zone 'Asia/Taipei', {}, False)"
 
 
 LOGGING_FILE = 'ipgod.log'
@@ -47,24 +45,6 @@ def getLastUpdateEpoch(conn):
         logging.exception("Query DB for last fetch error!!")
 
 
-def insertDownloadStatus(conn, resource_id, timeStr, status):
-    """
-    Write download result status into database.
-    :param conn: PostgreSQL connection
-    :param resource_id: String, with format A59000000N-000229-010,
-            which having fixed length 21
-    :param timeStr: String, with 2016-11-22 12:10:00 format
-    :param status: small int
-    :return:
-    """
-
-    qs = q_string2_template.format(const.DB_TABLE, resource_id, timeStr, status)
-    try:
-        conn.query(qs)
-    except Exception as e:
-        logging.exception("Insert new record error !!")
-
-
 def insertDownloadResult(conn, package_name, file_id, timeStr, status):
     """
     Write download result status into database.
@@ -75,7 +55,7 @@ def insertDownloadResult(conn, package_name, file_id, timeStr, status):
     :param status: small int
     :return:
     """
-    qs = query_string_template.format(const.DB_TABLE, package_name, file_id, timeStr, status)
+    qs = q_string2_template.format(const.DB_TABLE, package_name, file_id, timeStr, status)
     try:
         conn.query(qs)
     except Exception as e:
