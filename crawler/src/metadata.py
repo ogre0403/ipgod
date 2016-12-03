@@ -91,7 +91,9 @@ class Metadata(object):
             
             # Save download status in postgreSQL DB
             conn = DBUtil.createConnection()
-            DBUtil.insertDownloadStatus(conn, self.resourceID, self.timeStr, self.downloadStatusCode)
+            DBUtil.insertDownloadResult(conn,
+                                        self.resourceID[:-4], self.resourceID[-3:],
+                                        self.timeStr, self.downloadStatusCode)
             DBUtil.closeConnection(conn)
             
             # if status code != 200 will return false
