@@ -7,7 +7,7 @@ import logging
 import ConfigParser
 import sys
 
-from ckanapi import RemoteCKAN, NotAuthorized
+from ckanapi import RemoteCKAN, NotAuthorized, NotFound, ValidationError, CKANAPIError, ServerIncompatibleError
 
 LOGGING_FILE = 'ipgod-od2ckan.log'
 logging.basicConfig(filename=LOGGING_FILE,
@@ -70,8 +70,13 @@ class import2ckan():
 		extras = self.package['extras']
             )
 	    res = {self.package['name']:True}
+	except ValidationError as e:
+	    res = {self.package['name']:False}
+	    print "ValidationError %s\n" % e
+	    logger.info("add package %s fail: (%s)" % (self.package['name'], e))
 	except:
 	    res = {self.package['name']:False}
+	    logger.info("add package %s fail: (%s)" % (self.package['name'], self.ckan.errors))
 	return res
 
     def add_resource(self):
@@ -80,23 +85,25 @@ class import2ckan():
 	for res in self.package['resources']:
 	    rfile = self.package['basepath']+'/'+res['resourceid']+'.'+res['format'].lower()
 	    rid = res['resourceid']
+	    rres[rid] = False
             if os.path.isfile(rfile) == True:
 	        logger.info("add resource %s and upload file %s" % (res['resourceid'], rfile))
             else:
-	        logger.info("file not exist or some file error" % rfile)
-                
-	    #resc = self.ckan.action.resource_create(
-	    #    package_id=self.package['name'].lower(),
-	    #    url=res['resourceid'].lower(),
-	    #    description=res['resourcedescription'],
-	    #    format=res['format'].lower(),
-	    #    name=res['resourceid'].lower(),
-	    #    last_modified=res['resourcemodified'],
-	    #    upload=open(rfile, 'rb'),
-	    #)
-	    #print resc
-            
+	        logger.info("file %s not exist or some file error" % rfile)
 
+	#    print "upload file %s" % rfile
+	#    resc = self.ckan.action.resource_create(
+	#        package_id=self.package['name'].lower(),
+	#        url=res['resourceid'].lower(),
+	#        description=res['resourcedescription'],
+	#        format=res['format'].lower(),
+	#        name=res['resourceid'].lower(),
+	#        last_modified=res['resourcemodified'],
+	#        upload=open(rfile, 'rb'),
+	#    )
+        #    print resc
+
+               
 	    try:
 		if self.check_resource(res['resourceid'].lower()) == True:
 		    logger.info("resource %s exist" % res['resourceid'])
@@ -113,9 +120,10 @@ class import2ckan():
                     print resc
 		    logger.info("resource added %s" % res['resourceid'])
 		rres[rid] = True
+	    except NotFound:
+	        logger.info("add resource %s fail (name/id not found)" % res['resourceid'])
 	    except:
 	        logger.info("add resource %s fail" % res['resourceid'])
-		rres[rid] = False
 	return rres
 
     def add_organization(self):
@@ -188,7 +196,7 @@ if __name__ == '__main__':
     #jsonfile = 'testdata/A41000000G-000001/A41000000G-000001.json'
     jsonfile = '/opt/ipgod_production/data_download/A49000000B-000005/A49000000B-000005.json'
     if len(sys.argv) > 0:
-        jsonfile = sys.argv[0]
+        jsonfile = sys.argv[1]
     odtw = odtw.od()
     data = odtw.read(jsonfile)
 

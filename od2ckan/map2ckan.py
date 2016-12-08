@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import organization_map
 import hashlib
+import re
 
 class mapod2ckan():
     def __init__(self):
@@ -25,8 +26,28 @@ class mapod2ckan():
 	#	tagdata={'name':testkeyword}
 	#	self.package['tag'].append(tagdata)
 	# and thsi is free tags
-	    tagdata={'name':keyword}
-	    self.package['tag'].append(tagdata)
+	    values = re.split(",", keyword)
+	    if len(values) > 1:
+		self.map_tag_params("keyword", values)
+	    else:
+		skipkw = re.compile('http://')
+		if skipkw.search(keyword) != '':
+		    return
+		keyword = keyword.replace(u"「", "")
+		keyword = keyword.replace(u"」", "")
+		keyword = keyword.replace(u"／", "")
+		keyword = keyword.replace(u"/", "")
+		keyword = keyword.replace(u"。", "")
+		keyword = keyword.replace(u"、", "")
+		keyword = keyword.replace(u"'", "")
+		keyword = keyword.replace(u"?", "")
+		if len(keyword) == 0:
+		    return
+		elif len(keyword) <2:
+		    keyword = "%s_" % keyword
+		#print "keyword: n%sn" % keyword
+		tagdata={'name':keyword}
+		self.package['tag'].append(tagdata)
 
     def map_organization_params(self, key, value):
 	if key == 'organization':
@@ -55,9 +76,11 @@ class mapod2ckan():
         if key == 'type':
 	    key="data type"
 
-        #print "key %s value %s" % (key, value)
+        #print "key %s value b%sb" % (key, value)
         if type(value) is int:
 	    data=value
+	elif type(value) is bool:
+	    data = str(value)
         elif type(value) is list or type(value) is tuple:
             data = ''.join(str(e) for e in value)
         else:

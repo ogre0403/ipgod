@@ -60,6 +60,7 @@ class ipgoddb():
     def import_done(self, package, fileid):
         try:
             self.cur.execute("UPDATE ckan_download SET processed=TRUE where package_name like %s and file_id like %s", (package, fileid))
+            self.cur.execute("UPDATE ckan_download SET skip=FALSE where package_name like %s and file_id like %s", (package, fileid))
             self.conn.commit()
         except:
             logger.warn("import done error")
