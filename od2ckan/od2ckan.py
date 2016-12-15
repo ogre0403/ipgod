@@ -60,7 +60,7 @@ class import2ckan():
 		title = self.package['title'],
 		owner_org = self.package['owner_org'],
 		notes = self.package['notes'],
-		#type = self.package['type'],
+		type = "dataset",
 		last_modified = self.package['last_modified'],
 		#license_id = self.package['license_id'],
 		author = self.package['author'],
@@ -148,7 +148,7 @@ class import2ckan():
 		title = self.package['title'],
 		owner_org = self.package['owner_org'],
 		notes = self.package['notes'],
-		#type = self.package['type'],
+		type = "dataset",
 		last_modified = self.package['last_modified'],
 		#license_id = self.package['license_id'],
 		author = self.package['author'],
@@ -186,7 +186,7 @@ class import2ckan():
 if __name__ == '__main__': 
     jsonfile = 'testdata/A41000000G-000001/A41000000G-000001.json'
     #jsonfile = '/opt/ipgod_production/data_download/313200000G-000184/313200000G-000184.json'
-    jsonfile = '/opt/ipgod_production/data_download/313200000G-000207/313200000G-000207.json'
+    #jsonfile = '/opt/ipgod_production/data_download/313200000G-000207/313200000G-000207.json'
     odtw = odtw.od()
     data = odtw.read(jsonfile)
 
