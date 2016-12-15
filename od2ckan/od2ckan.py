@@ -60,7 +60,7 @@ class import2ckan():
 		title = self.package['title'],
 		owner_org = self.package['owner_org'],
 		notes = self.package['notes'],
-		type = self.package['type'],
+		#type = self.package['type'],
 		last_modified = self.package['last_modified'],
 		#license_id = self.package['license_id'],
 		author = self.package['author'],
@@ -118,10 +118,12 @@ class import2ckan():
 	return rres
 
     def add_organization(self):
+    
 	self.ckan.action.organization_create(
 		name=self.package['owner_org'],
 		title=self.package['org']['title'],
-		extras=self.package['org']['extras']
+		extras=self.package['org']['extras'],
+		users=[{"name":"admin"}]
 		)
 	return
 
@@ -133,7 +135,8 @@ class import2ckan():
 		id=self.package['owner_org'],
 		name=self.package['owner_org'],
 		title=self.package['org']['title'],
-		extras=self.package['org']['extras']
+		extras=self.package['org']['extras'],
+		users=[{"name":"admin"}]
 		)
 	return
 
@@ -145,7 +148,7 @@ class import2ckan():
 		title = self.package['title'],
 		owner_org = self.package['owner_org'],
 		notes = self.package['notes'],
-		type = self.package['type'],
+		#type = self.package['type'],
 		last_modified = self.package['last_modified'],
 		#license_id = self.package['license_id'],
 		author = self.package['author'],

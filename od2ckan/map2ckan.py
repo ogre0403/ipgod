@@ -51,6 +51,8 @@ class mapod2ckan():
     def map_package_extras(self, key, value):
         if key == 'notes':
 	   key="extra note"
+        if key == 'type':
+	   key="data type"
         if type(value) is int:
 	   data=value
         else:
@@ -85,8 +87,8 @@ class mapod2ckan():
 		self.map_package_params('name', v)
 	    elif k == 'description':
 		self.map_package_params('notes', v)
-	    elif k == 'type':
-		self.map_package_params('type', v)
+#	    elif k == 'type':
+#		self.map_package_params('type', v)
 	    elif k == 'publisher':
 		self.map_package_params('owner_org', v)
 	    elif k == 'modified':
