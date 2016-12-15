@@ -79,11 +79,28 @@ class import2ckan():
 	for res in self.package['resources']:
 	    rfile = self.package['basepath']+'/'+res['resourceid']+'.'+res['format'].lower()
 	    rid = res['resourceid']
+            if os.path.isfile(rfile) == True:
+	        logger.info("add resource %s and upload file %s" % (res['resourceid'], rfile))
+            else:
+	        logger.info("file not exist or some file error" % rfile)
+                
+	    #resc = self.ckan.action.resource_create(
+	    #    package_id=self.package['name'].lower(),
+	    #    url=res['resourceid'].lower(),
+	    #    description=res['resourcedescription'],
+	    #    format=res['format'].lower(),
+	    #    name=res['resourceid'].lower(),
+	    #    last_modified=res['resourcemodified'],
+	    #    upload=open(rfile, 'rb'),
+	    #)
+	    #print resc
+            
+
 	    try:
 		if self.check_resource(res['resourceid'].lower()) == True:
 		    logger.info("resource %s exist" % res['resourceid'])
 		else:
-		    self.ckan.action.resource_create(
+		    resc = self.ckan.action.resource_create(
 			package_id=self.package['name'].lower(),
 			url=res['resourceid'].lower(),
 			description=res['resourcedescription'],
@@ -92,9 +109,11 @@ class import2ckan():
 			last_modified=res['resourcemodified'],
 			upload=open(rfile, 'rb'),
 		    )
+                    print resc
 		    logger.info("resource added %s" % res['resourceid'])
 		rres[rid] = True
 	    except:
+	        logger.info("add resource %s fail" % res['resourceid'])
 		rres[rid] = False
 	return rres
 
@@ -154,14 +173,17 @@ class import2ckan():
 	    pres = self.update_package()
 	    rres = self.add_resource()
 	else:
-	    logger.info("add package and resources " + self.package['name'])
+	    logger.info("add package " + self.package['name'])
 	    pres = self.add_package()
+	    logger.info("add resources from package" + self.package['name'])
 	    rres = self.add_resource()
 	ckan_res = {'package':pres, 'resources':rres}
 	return ckan_res
 
 if __name__ == '__main__': 
     jsonfile = 'testdata/A41000000G-000001/A41000000G-000001.json'
+    #jsonfile = '/opt/ipgod_production/data_download/313200000G-000184/313200000G-000184.json'
+    jsonfile = '/opt/ipgod_production/data_download/313200000G-000207/313200000G-000207.json'
     odtw = odtw.od()
     data = odtw.read(jsonfile)
 

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import odtw
 import map2ckan
+#import tockan
 import od2ckan
 import os
 import logging
@@ -27,7 +28,7 @@ if __name__ == '__main__':
 	error=''
         pkgs = idb.get_pkgs()
         for pkg in pkgs:
-	    idb.import_pkg(pkg, 0)
+	    idb.import_pkg(pkg, 'metadata', 0)
             jsonfile = rootpath+"/"+pkg+"/"+pkg+".json"
 	    if os.path.isfile(jsonfile) != True:
 		error = "jsonfile %s error" % jsonfile
@@ -46,17 +47,21 @@ if __name__ == '__main__':
 		res = put2ckan.commit(package)
 	    except:
                 error = "unknow error"
-                idb.update_pkg(pkg, 0)
-                idb.log_package(pkg, error)
+                idb.update_pkg(pkg, 'metadata', 0)
+                idb.log_package(pkg, 'metadata', error)
 	    print res
 	    if res['package'][pkg] == True:
-                idb.update_pkg(pkg, 1)
+                idb.update_pkg(pkg, 'metadata', 1)
 		res_data = res['resources']
 		for fileid, status in res_data.items():
 		    rids = fileid.split('-')
 		    rid = rids[-1]
 		    print "%s %s %s" % (pkg, rid, status)
+	    	    idb.import_pkg(pkg, rid, 0)
 		    if status == True:
 			idb.import_done(pkg, rid)
+	    		idb.update_pkg(pkg, rid, 1)
+                    else:
+	    		idb.update_pkg(pkg, rid, 0)
 	time.sleep(5)
 
