@@ -40,7 +40,13 @@ def getLastUpdateEpoch(conn):
     qs = q_string1_template.format(const.DB_TABLE)
     try:
         q = conn.query(qs)
-        return q.namedresult()[0].last.strftime('%Y-%m-%d %H:%M:%S')
+        """
+        To aviod empty DB
+        """
+        if q.namedresult()[0].last is None:
+            return "NA"
+        else:
+            return q.namedresult()[0].last.strftime('%Y-%m-%d %H:%M:%S')
     except Exception as e:
         logging.exception("Query DB for last fetch error!!")
 

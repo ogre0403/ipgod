@@ -16,7 +16,7 @@ def main():
         historyFetcher.start()
 
     # Start Fetcher fetch new metadata, and put into share queue
-    updateFetcher = Fetcher(SHARE_Q, 5)
+    updateFetcher = Fetcher(SHARE_Q, config.update_interval_sec)
     updateFetcher.start()
 
     # Start a downloader, get one metadata from queue,
