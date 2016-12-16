@@ -50,17 +50,23 @@ class mapod2ckan():
 
     def map_package_extras(self, key, value):
         if key == 'notes':
-	   key="extra note"
+	    key="extra note"
+
         if key == 'type':
-	   key="data type"
+	    key="data type"
+
+        #print "key %s value %s" % (key, value)
         if type(value) is int:
-	   data=value
+	    data=value
+        elif type(value) is list or type(value) is tuple:
+            data = ''.join(str(e) for e in value)
         else:
 	    data = value.encode('utf-8')
-	    extra={}
-	    extra['key']=key.encode('utf-8')
-	    extra['value']=data
-	    self.package['extras'].append(extra)
+	
+        extra={}
+	extra['key']=key.encode('utf-8')
+	extra['value']=data
+	self.package['extras'].append(extra)
     
     def map_resources_params(self, key, value):
         for data in value:

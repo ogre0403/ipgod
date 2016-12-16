@@ -43,6 +43,7 @@ if __name__ == '__main__':
             od_data_path = os.path.dirname(os.path.realpath(jsonfile))
             package['basepath'] = od_data_path
             put2ckan = od2ckan.import2ckan()
+	    res = {'package':{pkg:False}, 'resources':False}
             try:
 		res = put2ckan.commit(package)
 	    except:

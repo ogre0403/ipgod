@@ -185,7 +185,6 @@ class import2ckan():
 
 if __name__ == '__main__': 
     jsonfile = 'testdata/A41000000G-000001/A41000000G-000001.json'
-    #jsonfile = '/opt/ipgod_production/data_download/313200000G-000184/313200000G-000184.json'
     #jsonfile = '/opt/ipgod_production/data_download/313200000G-000207/313200000G-000207.json'
     odtw = odtw.od()
     data = odtw.read(jsonfile)
