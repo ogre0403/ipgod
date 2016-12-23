@@ -1,8 +1,13 @@
 {% set stats = h.get_site_statistics() %}
 
 <div class="box stats">
-  <div class="inner">
-    <h3>{{ _('{0} statistics').format(g.site_title) }}</h3>
+ 
+  	<section class="group-list module module-narrow module-shallow">
+ 	 <header class="module-heading">
+    <h3>{{ _('{0} 統計').format(g.site_title) }}</h3>
+   </header>
+   </section>
+    <div class="inner">
     <ul>
       {% block stats_group %}
       <li>

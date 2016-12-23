@@ -2866,6 +2866,7 @@ input[type="submit"].btn.btn-mini {
   margin-left: 0;
   margin-bottom: 20px;
   list-style: none;
+  font-size: 20px;
 }
 .nav > li > a {
   display: block;
@@ -5296,7 +5297,7 @@ a.badge:focus {
 }
 @media (max-width: 979px) {
   body {
-    padding-top: 0;
+    padding-top: 10;
   }
   .navbar-fixed-top,
   .navbar-fixed-bottom {
@@ -8243,10 +8244,9 @@ h4 small {
   position: relative;
 }
 .homepage .module-search {
-  padding: 5px;
+  padding: 1px;
   margin: 20px 0 0 0;
-  color: #ffffff;
-  background: #ffffff;
+  color: #555555;
 }
 .homepage .module-search .search-giant {
   margin-bottom: 10px;
@@ -8258,7 +8258,7 @@ h4 small {
   -webkit-border-radius: 3px 3px 0 0;
   -moz-border-radius: 3px 3px 0 0;
   border-radius: 3px 3px 0 0;
-  background-color: #ffa368;
+  background-color: rgba(100%,70%,50%,0.8);
   border-bottom: none;
 }
 .homepage .module-search .module-content .heading {
@@ -8479,7 +8479,7 @@ h4 small {
   white-space: nowrap;
 }
 .masthead .nav-collapse {
-  padding-top: 10px;
+  padding-top: 30px;
 }
 .masthead .section {
   float: left;
@@ -8684,16 +8684,16 @@ h4 small {
 .site-footer,
 .site-footer label,
 .site-footer small {
-  color: #cd9b9b;
+  color: #59656f;
 }
 .site-footer a {
-  color: #cd9b9b;
+  color: #59656f;
 }
 .footer-links ul li {
   margin-bottom: 5px;
 }
 .attribution small {
-  color: #cd9b9b;
+  color: #59656f;
   font-size: 12px;
 }
 .attribution .ckan-footer-logo {
