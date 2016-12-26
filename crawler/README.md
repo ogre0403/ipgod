@@ -35,7 +35,10 @@ db_password="ckan_passwd"   # password of Database which having download status
  
 DOWNLOAD_PATH = '/tmp'      # Where to place download open data resource
 
-update_interval_sec = 5     # Frequency of fetching new data, in second
+update_interval_sec = 60    # Frequency of fetching new data, in second  
+
+logging_configure_file = "logging.ini"  # LOG file onfiguration file
+
 ```
 
 ### Use *Python3* to launch Crawler 

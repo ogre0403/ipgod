@@ -1,17 +1,13 @@
 from pg import DB
 import const
 import config
-import logging
+import logging.config
 
 
 q_string1_template = "select max(download_time at time zone 'Asia/Taipei') as last from {} "
 q_string2_template = "INSERT INTO {} VALUES ( '{}', '{}',TIMESTAMP '{}' at time zone 'Asia/Taipei', {}, False)"
 
-
-LOGGING_FILE = 'ipgod.log'
-logging.basicConfig(  # filename=LOGGING_FILE,
-    level=logging.INFO,
-    format='%(asctime)s [%(levelname)s] %(filename)s_%(lineno)d  : %(message)s')
+logging.config.fileConfig(config.logging_configure_file)
 logger = logging.getLogger('root')
 
 

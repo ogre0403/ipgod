@@ -2,17 +2,14 @@ import config
 import const
 import json
 import requests
-import logging
+import logging.config
 import os
 import DBUtil
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-LOGGING_FILE = 'ipgod.log'
-logging.basicConfig(#filename=LOGGING_FILE,
-                    level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s] %(filename)s_%(lineno)d  : %(message)s')
+logging.config.fileConfig(config.logging_configure_file)
 logger = logging.getLogger('root')
 
 
