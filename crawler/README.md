@@ -39,6 +39,8 @@ update_interval_sec = 60    # Frequency of fetching new data, in second
 
 logging_configure_file = "logging.ini"  # LOG file onfiguration file
 
+downloader_num = 4          # Number of Downloaders
+
 ```
 
 ### Use *Python3* to launch Crawler 

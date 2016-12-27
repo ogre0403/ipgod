@@ -21,10 +21,14 @@ def main():
     updateFetcher = Fetcher(SHARE_Q, config.update_interval_sec)
     updateFetcher.start()
 
-    # Start a downloader, get one metadata from queue,
-    # then download open data and archive into ckan
-    downloader = Downloader(SHARE_Q)
-    downloader.start()
+    # Start some downloaders, and each get one metadata from queue,
+    # then download open data.
+    # Use multiple downloaders to increase download speed.
+    downloaders = []
+    for i in range(config.downloader_num):
+        downloaders.append(Downloader(SHARE_Q))
+        downloaders[i].start()
+
 
 
 if __name__ == "__main__":
