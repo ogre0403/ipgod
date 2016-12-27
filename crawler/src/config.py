@@ -1,4 +1,4 @@
-FetchHistory = True
+FetchHistory = False
 
 db_ip = "localhost"
 db_port = 5432
