@@ -5,13 +5,12 @@ import threading
 import const
 import json
 import requests
-import logging.config
 import datetime
 import DBUtil
-import config
+import logging
 
-logging.config.fileConfig(config.logging_configure_file)
-logger = logging.getLogger('root')
+logging.getLogger("schedule").setLevel(logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
 class Fetcher(threading.Thread):

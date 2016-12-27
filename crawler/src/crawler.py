@@ -1,8 +1,10 @@
 from Fetcher import Fetcher
 from Downloader import Downloader
 import queue
-import logging
 import config
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def main():
@@ -26,8 +28,10 @@ def main():
 
 
 if __name__ == "__main__":
-    # Filter out non-necessary logging
-
-    for handler in logging.root.handlers:
-        handler.addFilter(logging.Filter('root'))
+    # using python logging in multiple modules
+    # Ref: http://stackoverflow.com/questions/15727420/using-python-logging-in-multiple-modules
+    import logging.config
+    logging.config.fileConfig(config.logging_configure_file,
+                              defaults=None,
+                              disable_existing_loggers=False)
     main()

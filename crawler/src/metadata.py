@@ -2,15 +2,14 @@ import config
 import const
 import json
 import requests
-import logging.config
 import os
 import DBUtil
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+import logging
 
+logging.getLogger("requests").setLevel(logging.WARNING)
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-
-logging.config.fileConfig(config.logging_configure_file)
-logger = logging.getLogger('root')
+logger = logging.getLogger(__name__)
 
 
 class Metadata(object):
