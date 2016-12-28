@@ -48,11 +48,15 @@ class ipgoddb():
         except:
             logger.warn("import done error")
 
-
-    def import_pkg(self, package, fileid, status):
+    def exist(self, package, fileid):
+	print package
         self.cur.execute("SELECT COUNT(*) from import where package_name like %s and file_id = %s", (package, fileid))
 	count_pkg = self.cur.fetchall()
 	pkg_c = count_pkg[0][0]
+        return pkg_c
+
+    def import_pkg(self, package, fileid, status):
+        pkg_c = self.exist(package, fileid)
 	if pkg_c > 0:
 	    logger.warn("package %s and resource %s exist" % (package, fileid))
 	else:
@@ -62,6 +66,18 @@ class ipgoddb():
 		self.conn.commit()
 	    except:
 		logger.warn("import db error")
+
+    def get_status(self, package, fileid):
+        
+        pkg_c = self.exist(package, fileid)
+        if pkg_c > 0:
+            self.cur.execute("SELECT status from import where package_name like %s and file_id = %s", (package, fileid))
+            count_status = self.cur.fetchall()
+            status = count_status[0][0]
+        else:
+            status = 0
+        print status
+        return status
 
 
     def update_pkg(self, package, fileid, status):

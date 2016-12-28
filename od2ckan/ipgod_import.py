@@ -28,6 +28,10 @@ if __name__ == '__main__':
 	error=''
         pkgs = idb.get_pkgs()
         for pkg in pkgs:
+            pstatus = 0
+            pstatus = idb.get_status(pkg, 'metadata')
+            if pstatus == -3:
+                continue
 	    idb.import_pkg(pkg, 'metadata', 0)
             jsonfile = rootpath+"/"+pkg+"/"+pkg+".json"
 	    if os.path.isfile(jsonfile) != True:
@@ -48,7 +52,9 @@ if __name__ == '__main__':
 		res = put2ckan.commit(package)
 	    except:
                 error = "unknow error"
-                idb.update_pkg(pkg, 'metadata', 0)
+                pstatus = int(pstatus)
+                pstatus = pstatus-1
+                idb.update_pkg(pkg, 'metadata', pstatus)
                 idb.log_package(pkg, 'metadata', error)
 	    print res
 	    if res['package'][pkg] == True:
@@ -57,12 +63,22 @@ if __name__ == '__main__':
 		for fileid, status in res_data.items():
 		    rids = fileid.split('-')
 		    rid = rids[-1]
+                    rstatus = idb.get_status(pkg, rid)
+                    if rstatus == -3:
+                        continue
 		    print "%s %s %s" % (pkg, rid, status)
 	    	    idb.import_pkg(pkg, rid, 0)
 		    if status == True:
 			idb.import_done(pkg, rid)
 	    		idb.update_pkg(pkg, rid, 1)
                     else:
-	    		idb.update_pkg(pkg, rid, 0)
+			rstatus = int(rstatus)
+			rstatus = rstatus-1
+	    		idb.update_pkg(pkg, rid, rstatus)
+	    else:
+                pstatus = int(pstatus)
+                pstatus = pstatus-1
+		idb.update_pkg(pkg, 'metadata', pstatus)
+
 	time.sleep(5)
 
