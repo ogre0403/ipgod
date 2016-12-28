@@ -1,15 +1,13 @@
 from pg import DB
 import const
 import config
-import logging.config
-
+import logging
 
 q_string1_template = "select max(download_time at time zone 'Asia/Taipei') as last from {} "
 q_string2_template = "INSERT INTO {} VALUES ( '{}', '{}',TIMESTAMP '{}' at time zone 'Asia/Taipei', {}, False)"
 
-logging.config.fileConfig(config.logging_configure_file)
-logger = logging.getLogger('root')
 
+logger = logging.getLogger(__name__)
 
 def createConnection():
     """

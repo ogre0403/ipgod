@@ -1,10 +1,9 @@
-from metadata import Metadata
+# from metadata import Metadata
 import threading
 import logging.config
-import config
 
-logging.config.fileConfig(config.logging_configure_file)
-logger = logging.getLogger('root')
+import logging
+logger = logging.getLogger(__name__)
 
 
 class Downloader(threading.Thread):

@@ -10,3 +10,4 @@ DOWNLOAD_PATH = 'D:/dataset'
 logging_configure_file = "logging.ini"
 
 update_interval_sec = 60
+downloader_num = 4
