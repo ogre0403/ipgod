@@ -27,10 +27,12 @@ if __name__ == '__main__':
     while True:
 	error=''
         pkgs = idb.get_pkgs()
+        print "cout of package %i" % len(pkgs)
         for pkg in pkgs:
             pstatus = 0
             pstatus = idb.get_status(pkg, 'metadata')
             if pstatus == -3:
+		idb.skip_package(pkg)
                 continue
 	    idb.import_pkg(pkg, 'metadata', 0)
             jsonfile = rootpath+"/"+pkg+"/"+pkg+".json"
@@ -38,6 +40,7 @@ if __name__ == '__main__':
 		error = "jsonfile %s error" % jsonfile
 		logger.warn("%s" % error)
                 #idb.remove_pkg(pkg)
+		idb.skip_package(pkg)
 		continue
             odtwdata = odtw.od()
             data = odtwdata.read(jsonfile)
@@ -65,6 +68,7 @@ if __name__ == '__main__':
 		    rid = rids[-1]
                     rstatus = idb.get_status(pkg, rid)
                     if rstatus == -3:
+			idb.skip_package(pkg, rid)
                         continue
 		    print "%s %s %s" % (pkg, rid, status)
 	    	    idb.import_pkg(pkg, rid, 0)

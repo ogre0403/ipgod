@@ -29,17 +29,33 @@ class ipgoddb():
         self.cur = self.conn.cursor()
 
     def get_pkgs(self):
+        pkgs = []
+        rows=[]
         try:
             #self.cur.execute("SELECT package_name, status, datetime from import where  datetime > CURRENT_TIMESTAMP - INTERVAL '6000 secs' and status=200")
-            self.cur.execute("SELECT package_name, file_id from ckan_download  where status=200 and processed=FALSE")
+            self.cur.execute("SELECT package_name, file_id from ckan_download  where status=200 and processed=FALSE and skip=FALSE limit 1")
+            rows = self.cur.fetchall()
         except:
             logger.warn("select error")
-        pkgs = []
-        rows = self.cur.fetchall()
         for row in rows:
 	    pkg = row[0].rstrip()
             pkgs.append(pkg)
         return pkgs
+
+    def skip_package(self, package, fileid=''):
+#        print "skip package %s" % (package)
+#        self.cur.execute("UPDATE ckan_download SET skip=true where package_name like '{0}'".format(package))
+        try:
+            if fileid == '':
+                print "skip package %s" % (package)
+                self.cur.execute("UPDATE ckan_download SET skip=TRUE where package_name like '{0}'".format(package))
+                self.conn.commit()
+            else:
+                print "skip package %s, %s" % (package, fileid)
+                self.cur.execute("UPDATE ckan_download SET skip=TRUE where package_name like '{0}' and file_id like '{1}'".format(package, fileid))
+                self.conn.commit()
+        except:
+            logger.warn("skip packag error")
 
     def import_done(self, package, fileid):
         try:
@@ -49,10 +65,11 @@ class ipgoddb():
             logger.warn("import done error")
 
     def exist(self, package, fileid):
-	print package
-        self.cur.execute("SELECT COUNT(*) from import where package_name like %s and file_id = %s", (package, fileid))
+        status="X"
+        print "package: %s, field %s, status:%s" % (package, fileid, status)
+        self.cur.execute("SELECT package_name from import where package_name like %s and file_id = %s", (package, fileid))
 	count_pkg = self.cur.fetchall()
-	pkg_c = count_pkg[0][0]
+	pkg_c = len(count_pkg)
         return pkg_c
 
     def import_pkg(self, package, fileid, status):
@@ -69,6 +86,7 @@ class ipgoddb():
 
     def get_status(self, package, fileid):
         
+        pkg_c = 0
         pkg_c = self.exist(package, fileid)
         if pkg_c > 0:
             self.cur.execute("SELECT status from import where package_name like %s and file_id = %s", (package, fileid))
@@ -76,11 +94,14 @@ class ipgoddb():
             status = count_status[0][0]
         else:
             status = 0
-        print status
+        print "package: %s, field %s, status:%s" % (package, fileid, status)
         return status
 
 
     def update_pkg(self, package, fileid, status):
+        
+        if status == -3:
+            self.skip_package(package, fileid)
         try:
             self.cur.execute("UPDATE import SET status=%s where package_name like %s and file_id = %s", (status, package, fileid))
             self.conn.commit()
