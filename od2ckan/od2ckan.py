@@ -5,6 +5,7 @@ import map2ckan
 import os
 import logging
 import ConfigParser
+import sys
 
 from ckanapi import RemoteCKAN, NotAuthorized
 
@@ -184,8 +185,10 @@ class import2ckan():
 	return ckan_res
 
 if __name__ == '__main__': 
-    jsonfile = 'testdata/A41000000G-000001/A41000000G-000001.json'
-    #jsonfile = '/opt/ipgod_production/data_download/313200000G-000207/313200000G-000207.json'
+    #jsonfile = 'testdata/A41000000G-000001/A41000000G-000001.json'
+    jsonfile = '/opt/ipgod_production/data_download/A49000000B-000005/A49000000B-000005.json'
+    if len(sys.argv) > 0:
+        jsonfile = sys.argv[0]
     odtw = odtw.od()
     data = odtw.read(jsonfile)
 

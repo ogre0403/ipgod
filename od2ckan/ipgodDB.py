@@ -33,7 +33,7 @@ class ipgoddb():
         rows=[]
         try:
             #self.cur.execute("SELECT package_name, status, datetime from import where  datetime > CURRENT_TIMESTAMP - INTERVAL '6000 secs' and status=200")
-            self.cur.execute("SELECT package_name, file_id from ckan_download  where status=200 and processed=FALSE and skip=FALSE limit 1")
+            self.cur.execute("SELECT package_name, file_id from ckan_download  where status=200 and processed=FALSE and skip=FALSE and package_name != '' limit 1")
             rows = self.cur.fetchall()
         except:
             logger.warn("select error")
@@ -100,7 +100,7 @@ class ipgoddb():
 
     def update_pkg(self, package, fileid, status):
         
-        if status == -3:
+        if status <= -3:
             self.skip_package(package, fileid)
         try:
             self.cur.execute("UPDATE import SET status=%s where package_name like %s and file_id = %s", (status, package, fileid))
@@ -110,7 +110,7 @@ class ipgoddb():
 
     def log_package(self, package, fileid, log):
         try:
-            self.cur.execute("UPDATE import SET comment=%s where package_name like %s, and = like %s", (log, package, fileid))
+            self.cur.execute("UPDATE import SET comment='{0}' where package_name like '{1}' and file_id = '{2}'".format(log, package, fileid))
             self.conn.commit()
         except:
             logger.warn("log comment error")
