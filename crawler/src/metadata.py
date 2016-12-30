@@ -19,7 +19,7 @@ class Metadata(object):
         Given dataset id, find out all download link
         return all available opendata matadata object
         """
-
+        logger.info("Get Resource ID of dataid = " + dataid)
         r = requests.get(const.METADATA_URL_PREFIX + dataid)
         x = json.loads(r.text)
 
@@ -29,9 +29,14 @@ class Metadata(object):
         Metadata.getLogFile(x, dataid)
         result = []
 
-        for element in x["result"]["distribution"]:
-            obj = Metadata(element, timeStr)
-            result.append(obj)
+        if x["result"]["distribution"] != None:
+            for element in x["result"]["distribution"]:
+                obj = Metadata(element, timeStr)
+                result.append(obj)
+        else:
+            # Some data set has no resource field in JSON format
+            # eg. http://data.gov.tw/api/v1/rest/dataset/315260000M-000014
+            logger.warn("dataid = " + dataid+ " has no distribution field")
         return result
 
     def __init__(self, x, timeStr):

@@ -49,7 +49,6 @@ class Fetcher(threading.Thread):
         dataid = self.findUpdateDataID(latestTime)
         for s in dataid:
             meta = Metadata.getMetaData(s, self.timeStr)
-            logger.debug(dataid)
             for md in meta:
                 logger.debug(md.getResourceID() + " put to queue")
                 self.queue.put(md)
@@ -92,7 +91,7 @@ class Fetcher(threading.Thread):
             if historyTime is "NA":
                 # Case 1: The first run scenario, handle all past data
                 logger.info("Fetch new history metadata from scratch")
-                r = requests.get(const.MODIFIED_URL_PREFIX)
+                r = requests.get(const.METADATA_URL_PREFIX)
             else:
                 # Case 2: Recovery from failure, handle data between failure time and current
                 logger.info("Fetch new history metadata since "+historyTime)
