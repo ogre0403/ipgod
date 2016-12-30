@@ -59,6 +59,7 @@ if __name__ == '__main__':
                 pstatus = pstatus-1
                 idb.update_pkg(pkg, 'metadata', pstatus)
                 idb.log_package(pkg, 'metadata', error)
+		continue
 	    print res
 	    if res['package'][pkg] == True:
                 idb.update_pkg(pkg, 'metadata', 1)
@@ -84,5 +85,5 @@ if __name__ == '__main__':
                 pstatus = pstatus-1
 		idb.update_pkg(pkg, 'metadata', pstatus)
 
-	time.sleep(5)
+	time.sleep(10)
 

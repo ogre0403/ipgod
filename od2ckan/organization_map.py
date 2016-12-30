@@ -28,6 +28,8 @@ class organization_name():
 		        en = en.replace(")", "")
 		        en = en.replace("(", " ")
 		        en = en.replace("  ", " ")
+		        en = en.replace(" ", "_")
+		        en = en.replace("__", "_")
 		        govfile.close()
 		        return en
         else:
