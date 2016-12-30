@@ -8,7 +8,7 @@ CREATE TABLE ckan_download (
 	download_time   TIMESTAMP WITH TIME ZONE,
 	status          SMALLINT,
 	processed       boolean, 
-	PRIMARY KEY(package_name, file_id)
+	skip            boolean
 );
 ```
 
