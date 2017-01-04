@@ -7,6 +7,7 @@ import json
 import requests
 import logging
 import datetime
+import DBUtil
 
 LOGGING_FILE = 'ipgod.log'
 logging.basicConfig(  # filename=LOGGING_FILE,
@@ -18,7 +19,6 @@ logger = logging.getLogger('root')
 class Fetcher(threading.Thread):
     """
     Fetcher thread get metadata of newly updated opendata.
-
     """
 
     def __init__(self, queue, sec=-1):
@@ -31,12 +31,13 @@ class Fetcher(threading.Thread):
         self.queue = queue
         self.updateInterval = sec
         if self.updateInterval > 0:
-            schedule.every(self.updateInterval).seconds.do(self.fetchNewMetadata)
+            schedule.every(self.updateInterval).seconds.do(self.dummy)#fetchNewMetadata
 
     def dummy(self):
         """
         dummy function for test
-        """
+        """   
+        
         logger.info(str(threading.get_ident()) + " do repeat")
 
     def process_history(self):
@@ -44,6 +45,18 @@ class Fetcher(threading.Thread):
         """
         process history data since last fetch
         """
+        conn = DBUtil.createConnection()
+        latestTime = DBUtil.getLastUpdateEpoch(conn)
+        DBUtil.closeConnection(conn)
+
+        dataid = self.findUpdateDataID(latestTime)
+        for s in dataid:
+            meta = Metadata.getMetaData(s, self.timeStr)
+            logger.debug(dataid)
+            for md in meta:
+                logger.debug(md.getResourceID() + " put to queue")
+                self.queue.put(md)
+
         logger.info(str(threading.get_ident()) + " process hisotry")
 
     def run(self):
@@ -58,28 +71,38 @@ class Fetcher(threading.Thread):
     def fetchNewMetadata(self):
         dataid = self.findUpdateDataID()
         for s in dataid:
-            meta = Metadata.getMetaData(s,self.timeStr)
+            meta = Metadata.getMetaData(s, self.timeStr)
             logger.debug(dataid)
             for md in meta:
                 logger.debug(md.getResourceID() + " put to queue")
                 self.queue.put(md)
 
-    def findUpdateDataID(self):
+    def findUpdateDataID(self, historyTime= None):
         """
         find all data set which have been updated since self.updateInterval
-
         return array contains dataset id
         """
-        self.timeStr = self.buildQueryTimeStr()
-        logger.info("Fetch new metadata since " + self.timeStr)
-        r = requests.get(const.MODIFIED_URL_PREFIX + self.timeStr)
+
+        if historyTime is None:
+            self.timeStr = self.buildQueryTimeStr()
+            logger.info("Fetch new metadata since " + self.timeStr)
+            r = requests.get(const.MODIFIED_URL_PREFIX + self.timeStr)
+        else:
+            # self.timeStr = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            self.timeStr = self.buildQueryTimeStr()
+            if historyTime is "NA":
+                logger.info("Fetch new history metadata from scratch")
+                r = requests.get(const.MODIFIED_URL_PREFIX)
+            else:
+                logger.info("Fetch new history metadata since "+historyTime)
+                r = requests.get(const.MODIFIED_URL_PREFIX + historyTime)
         x = json.loads(r.text)
         return x['result']
+
 
     def buildQueryTimeStr(self):
         """
         build query time string with format yyyy-mm-dd hh:mm:ss
-
         datetime object value is equal to self.updateInterval ago
         """
         now = datetime.datetime.now()
