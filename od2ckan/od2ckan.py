@@ -4,6 +4,8 @@ import odtw
 import map2ckan
 import os
 import logging
+import ConfigParser
+
 from ckanapi import RemoteCKAN, NotAuthorized
 
 LOGGING_FILE = 'ipgod-od2ckan.log'
@@ -12,11 +14,14 @@ logging.basicConfig(filename=LOGGING_FILE,
                     format='%(asctime)s [%(levelname)s] %(filename)s_%(lineno)d  : %(message)s')
 logger = logging.getLogger('root') 
 
+config = ConfigParser.ConfigParser()
+config.read('config.ini')
 
 class import2ckan():
     def __init__(self):
-	url = "http://140.110.240.59"
-	ckan_key = "a6d44b37-7407-4ad1-b457-aa4b6c611d29"
+        global config
+	url = config.get('od2ckan', 'ckanurl')
+	ckan_key = config.get('od2ckan', 'ckan_key')
 	ua = 'ckanapiexample/1.0 (+http://example.com/my/website)'
 	self.ckan = RemoteCKAN(url, apikey=ckan_key, user_agent=ua)
 	self.package = {}

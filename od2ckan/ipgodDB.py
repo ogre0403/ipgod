@@ -4,6 +4,7 @@ import logging
 import psycopg2
 import time
 import datetime
+import ConfigParser
 
 LOGGING_FILE = 'ipgod-od2ckan.log'
 logging.basicConfig(filename=LOGGING_FILE,
@@ -11,11 +12,18 @@ logging.basicConfig(filename=LOGGING_FILE,
                     format='%(asctime)s [%(levelname)s] %(filename)s_%(lineno)d  : %(message)s')
 logger = logging.getLogger('root') 
 
+config = ConfigParser.ConfigParser()
+config.read('config.ini')
 class ipgoddb():
     def __init__(self):
         self.conn = 0
+	db = config.get('db', 'database')
+	user = config.get('db', 'user')
+	server = config.get('db', 'host')
+	password = config.get('db', 'password')
+
         try:
-            self.conn = psycopg2.connect("dbname='ipgod' user='thomas' host='localhost' password='nchcnchc'")
+            self.conn = psycopg2.connect("dbname=%s user=%s host=%s password=%s" % (db, user, server, password))
         except:
             logger.warn("connect db error")
         self.cur = self.conn.cursor()
