@@ -16,7 +16,6 @@ logger = logging.getLogger(__name__)
 class Fetcher(threading.Thread):
     """
     Fetcher thread get metadata of newly updated opendata.
-
     """
 
     def __init__(self, queue, sec=-1):
@@ -108,6 +107,5 @@ class Fetcher(threading.Thread):
         """
         now = datetime.datetime.now()
         return (now - datetime.timedelta(seconds=self.updateInterval)).strftime('%Y-%m-%d %H:%M:%S')
-
         # Use a fixed time String for testing
         # return "2016-12-01 11:30:00"

@@ -5,8 +5,8 @@ db_port = 5432
 db_user = "ckan_default"
 db_password = "ckan_passwd"
 
-# DOWNLOAD_PATH = 'D:/dataset'
-DOWNLOAD_PATH = '/opt/ipgod/data_download'
+DOWNLOAD_PATH = 'D:/dataset'
+# DOWNLOAD_PATH = '/opt/ipgod/data_download'
 
 logging_configure_file = "logging.ini"
 
