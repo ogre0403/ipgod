@@ -23,6 +23,13 @@ class organization_name():
                         logger.info("organization map successfully")
 		        en = row[2].lower()
 		        en = en.replace(" ", "_")
+		        en = en.replace(".", "_")
+		        en = en.replace(",", "")
+		        en = en.replace(")", "")
+		        en = en.replace("(", " ")
+		        en = en.replace("  ", " ")
+		        en = en.replace(" ", "_")
+		        en = en.replace("__", "_")
 		        govfile.close()
 		        return en
         else:

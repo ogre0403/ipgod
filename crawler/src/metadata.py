@@ -2,18 +2,14 @@ import config
 import const
 import json
 import requests
-import logging
 import os
 import DBUtil
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+import logging
 
+logging.getLogger("requests").setLevel(logging.WARNING)
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-
-LOGGING_FILE = 'ipgod.log'
-logging.basicConfig(#filename=LOGGING_FILE,
-                    level=logging.INFO,
-                    format='%(asctime)s [%(levelname)s] %(filename)s_%(lineno)d  : %(message)s')
-logger = logging.getLogger('root')
+logger = logging.getLogger(__name__)
 
 
 class Metadata(object):
@@ -23,7 +19,7 @@ class Metadata(object):
         Given dataset id, find out all download link
         return all available opendata matadata object
         """
-
+        logger.info("Get Resource ID of dataid = " + dataid)
         r = requests.get(const.METADATA_URL_PREFIX + dataid)
         x = json.loads(r.text)
 
@@ -33,9 +29,14 @@ class Metadata(object):
         Metadata.getLogFile(x, dataid)
         result = []
 
-        for element in x["result"]["distribution"]:
-            obj = Metadata(element, timeStr)
-            result.append(obj)
+        if x["result"]["distribution"] != None:
+            for element in x["result"]["distribution"]:
+                obj = Metadata(element, timeStr)
+                result.append(obj)
+        else:
+            # Some data set has no resource field in JSON format
+            # eg. http://data.gov.tw/api/v1/rest/dataset/315260000M-000014
+            logger.warn("dataid = " + dataid+ " has no distribution field")
         return result
 
     def __init__(self, x, timeStr):
@@ -104,9 +105,6 @@ class Metadata(object):
             if self.format is not "NA":
                 file_name = abspath + name +"." + self.format.strip(";\"").lower()
             else:
-                # TODO: ONLY support these 4 format?
-                # following resource URL can not be download
-                #  http://data.moi.gov.tw/MoiOD/System/DownloadFile.aspx?DATA=9DE2F2C7-F8C3-4D59-A3E7-D08E413C07E5
                 # Ensuring the file type is correct from url and request header.
                 if "zip" in URL.lower():
                     fileTypeFromURL = "zip"

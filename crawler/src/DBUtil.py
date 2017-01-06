@@ -3,17 +3,11 @@ import const
 import config
 import logging
 
-
 q_string1_template = "select max(download_time at time zone 'Asia/Taipei') as last from {} "
-q_string2_template = "INSERT INTO {} VALUES ( '{}', '{}',TIMESTAMP '{}' at time zone 'Asia/Taipei', {}, False)"
+q_string2_template = "INSERT INTO {} VALUES ( '{}', '{}',TIMESTAMP '{}' at time zone 'Asia/Taipei', {}, False, False)"
 
 
-LOGGING_FILE = 'ipgod.log'
-logging.basicConfig(  # filename=LOGGING_FILE,
-    level=logging.INFO,
-    format='%(asctime)s [%(levelname)s] %(filename)s_%(lineno)d  : %(message)s')
-logger = logging.getLogger('root')
-
+logger = logging.getLogger(__name__)
 
 def createConnection():
     """

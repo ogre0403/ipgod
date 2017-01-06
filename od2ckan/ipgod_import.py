@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import odtw
 import map2ckan
-import tockan
+#import tockan
 import od2ckan
 import os
 import logging
@@ -27,13 +27,20 @@ if __name__ == '__main__':
     while True:
 	error=''
         pkgs = idb.get_pkgs()
+        print "cout of package %i" % len(pkgs)
         for pkg in pkgs:
-	    idb.import_pkg(pkg, 0)
+            pstatus = 0
+            pstatus = idb.get_status(pkg, 'metadata')
+            if pstatus == -3:
+		idb.skip_package(pkg)
+                continue
+	    idb.import_pkg(pkg, 'metadata', 0)
             jsonfile = rootpath+"/"+pkg+"/"+pkg+".json"
 	    if os.path.isfile(jsonfile) != True:
 		error = "jsonfile %s error" % jsonfile
 		logger.warn("%s" % error)
                 #idb.remove_pkg(pkg)
+		idb.skip_package(pkg)
 		continue
             odtwdata = odtw.od()
             data = odtwdata.read(jsonfile)
@@ -43,21 +50,40 @@ if __name__ == '__main__':
             od_data_path = os.path.dirname(os.path.realpath(jsonfile))
             package['basepath'] = od_data_path
             put2ckan = od2ckan.import2ckan()
+	    res = {'package':{pkg:False}, 'resources':False}
             try:
 		res = put2ckan.commit(package)
 	    except:
                 error = "unknow error"
-                idb.update_pkg(pkg, 0)
-                idb.log_package(pkg, error)
+                pstatus = int(pstatus)
+                pstatus = pstatus-1
+                idb.update_pkg(pkg, 'metadata', pstatus)
+                idb.log_package(pkg, 'metadata', error)
+		continue
 	    print res
 	    if res['package'][pkg] == True:
-                idb.update_pkg(pkg, 1)
+                idb.update_pkg(pkg, 'metadata', 1)
 		res_data = res['resources']
 		for fileid, status in res_data.items():
 		    rids = fileid.split('-')
 		    rid = rids[-1]
+                    rstatus = idb.get_status(pkg, rid)
+                    if rstatus == -3:
+			idb.skip_package(pkg, rid)
+                        continue
 		    print "%s %s %s" % (pkg, rid, status)
+	    	    idb.import_pkg(pkg, rid, 0)
 		    if status == True:
 			idb.import_done(pkg, rid)
-	time.sleep(5)
+	    		idb.update_pkg(pkg, rid, 1)
+                    else:
+			rstatus = int(rstatus)
+			rstatus = rstatus-1
+	    		idb.update_pkg(pkg, rid, rstatus)
+	    else:
+                pstatus = int(pstatus)
+                pstatus = pstatus-1
+		idb.update_pkg(pkg, 'metadata', pstatus)
+
+	time.sleep(10)
 

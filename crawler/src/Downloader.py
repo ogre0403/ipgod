@@ -1,12 +1,9 @@
-from metadata import Metadata
+# from metadata import Metadata
 import threading
-import logging
+import logging.config
 
-LOGGING_FILE = 'ipgod.log'
-logging.basicConfig(  # filename=LOGGING_FILE,
-    level=logging.INFO,
-    format='%(asctime)s [%(levelname)s] %(filename)s_%(lineno)d  : %(message)s')
-logger = logging.getLogger('root')
+import logging
+logger = logging.getLogger(__name__)
 
 
 class Downloader(threading.Thread):

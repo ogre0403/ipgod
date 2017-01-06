@@ -30,7 +30,7 @@ USER postgres
 #       allows the RUN command to span multiple lines.
 RUN    /etc/init.d/postgresql start &&\
     psql --command "CREATE USER ckan_default WITH SUPERUSER PASSWORD 'ckan_passwd';" &&\
-    createdb -O ckan_default ckan_default
+    createdb -O ckan_default ipgod
 
 # Adjust PostgreSQL configuration so that remote connections to the
 # database are possible.
