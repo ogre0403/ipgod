@@ -45,11 +45,17 @@ class Fetcher(threading.Thread):
         conn = DBUtil.createConnection()
         latestTime = DBUtil.getLastUpdateEpoch(conn)
         DBUtil.closeConnection(conn)
-
         dataid = self.findUpdateDataID(latestTime)
+        logger.info(len(dataid))
+        dataid_count = 0
+        meta_count = 0
         for s in dataid:
+            dataid_count = dataid_count +1
+            logger.info("data count = " + str(dataid_count))
             meta = Metadata.getMetaData(s, self.timeStr)
             for md in meta:
+                meta_count = meta_count + 1
+                logger.info("meta_count = "+ str(meta_count))
                 logger.debug(md.getResourceID() + " put to queue")
                 self.queue.put(md)
 
