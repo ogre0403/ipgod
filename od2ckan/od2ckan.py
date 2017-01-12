@@ -76,14 +76,18 @@ class import2ckan():
 	    logger.info("add package %s fail: (%s)" % (self.package['name'], e))
 	except:
 	    res = {self.package['name']:False}
-	    logger.info("add package %s fail: (%s)" % (self.package['name'], self.ckan.errors))
+	    logger.info("add package %s fail: (%s)" % (self.package['name'], 'no idea'))
 	return res
 
     def add_resource(self):
 
 	rres = {}
 	for res in self.package['resources']:
-	    rfile = self.package['basepath']+'/'+res['resourceid']+'.'+res['format'].lower()
+            if 'file' in res:
+                rfile = res['file']
+            else:
+	        rfile = self.package['basepath']+'/'+res['resourceid']+'.'+res['format'].lower()
+
 	    rid = res['resourceid']
 	    rres[rid] = False
             if os.path.isfile(rfile) == True:
@@ -91,23 +95,24 @@ class import2ckan():
             else:
 	        logger.info("file %s not exist or some file error" % rfile)
 
-	#    print "upload file %s" % rfile
-	#    resc = self.ckan.action.resource_create(
-	#        package_id=self.package['name'].lower(),
-	#        url=res['resourceid'].lower(),
-	#        description=res['resourcedescription'],
-	#        format=res['format'].lower(),
-	#        name=res['resourceid'].lower(),
-	#        last_modified=res['resourcemodified'],
-	#        upload=open(rfile, 'rb'),
-	#    )
-        #    print resc
+	    if self.check_resource(res['resourceid'].lower()) == True:
+                logger.info("resource %s exist" % res['resourceid'])
+	    else:
+      
+	        #print "upload file %s" % rfile
+	        #resc = self.ckan.action.resource_create(
+	        #    package_id=self.package['name'].lower(),
+	        #    url=res['resourceid'].lower(),
+	        #    description=res['resourcedescription'],
+	        #    format=res['format'].lower(),
+	        #    name=res['resourceid'].lower(),
+	        #    last_modified=res['resourcemodified'],
+	        #    upload=open(rfile, 'rb'),
+	        #)
+                #print resc
+		#rres[rid] = True
 
-               
-	    try:
-		if self.check_resource(res['resourceid'].lower()) == True:
-		    logger.info("resource %s exist" % res['resourceid'])
-		else:
+	    	try:
 		    resc = self.ckan.action.resource_create(
 			package_id=self.package['name'].lower(),
 			url=res['resourceid'].lower(),
@@ -119,11 +124,11 @@ class import2ckan():
 		    )
                     print resc
 		    logger.info("resource added %s" % res['resourceid'])
-		rres[rid] = True
-	    except NotFound:
-	        logger.info("add resource %s fail (name/id not found)" % res['resourceid'])
-	    except:
-	        logger.info("add resource %s fail" % res['resourceid'])
+		    rres[rid] = True
+	    	except NotFound:
+	            logger.info("add resource %s fail (name/id not found)" % res['resourceid'])
+	        except:
+	            logger.info("add resource %s fail" % res['resourceid'])
 	return rres
 
     def add_organization(self):
