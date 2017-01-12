@@ -2,3 +2,4 @@
 .project
 .pydevproject
 .idea/
+od2ckan/config.ini
