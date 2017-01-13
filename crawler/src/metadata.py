@@ -21,10 +21,12 @@ class Metadata(object):
         """
         logger.info("Get Resource ID of dataid = " + dataid)
         r = requests.get(const.METADATA_URL_PREFIX + dataid)
-        x = json.loads(r.text)
-
-        if x.get("success") == False:
-            return []
+        try:
+            x = json.loads(r.text)
+            if x.get("success") == False:
+                return []
+        except:
+            logging.exception(dataid + "Json load  error !!")
 
         Metadata.getLogFile(x, dataid)
         result = []
@@ -44,6 +46,8 @@ class Metadata(object):
         self.resourceID = x.get('resourceID')
         # eg. resourceID = A59000000N-000229-001
         #     datasetID = A59000000N-000229
+
+        #todo: issue #21 resourceID is not always correct
         self.datasetID = self.resourceID[:-4]
         self.resourceDescription = x.get('resourceDescription')
         self.format = x.get('format',"NA")
@@ -176,6 +180,9 @@ class Metadata(object):
     def getResourceID(self):
         return self.resourceID
 
+    def getFileID(self):
+        return self.resourceID.split("-")[-1]
+
     def getResourceDescription(self):
         return self.resourceDescription
 
@@ -186,7 +193,12 @@ class Metadata(object):
         return self.resourceModified
 
     def getDownloadURL(self):
-        return self.downloadURL
+        if hasattr(self, 'downloadURL'):
+            return self.downloadURL
+        elif hasattr(self, 'accessURL'):
+            return self.accessURL
+        else:
+            return ""
 
     def getMetadataSourceOfData(self):
         return self.metadataSourceOfData

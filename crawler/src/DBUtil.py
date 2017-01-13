@@ -6,6 +6,12 @@ import logging
 q_string1_template = "select max(download_time at time zone 'Asia/Taipei') as last from {} "
 q_string2_template = "INSERT INTO {} VALUES ( '{}', '{}',TIMESTAMP '{}' at time zone 'Asia/Taipei', {}, False, False)"
 
+insert_dataset_template = "INSERT INTO {} VALUES ('{}' , FALSE )"
+query_not_porcessed_dataset = "SELECT package_name from dataset where processed = FALSE"
+update_dataset = "UPDATE dataset set processed=TRUE WHERE package_name = '{}' "
+
+insert_resource_template = "INSERT INTO {} VALUES (nextval('resource_metadata_id_seq'),'{}', '{}','{}','{}', FALSE)"
+
 
 logger = logging.getLogger(__name__)
 
@@ -60,6 +66,42 @@ def insertDownloadResult(conn, package_name, file_id, timeStr, status):
         conn.query(qs)
     except Exception as e:
         logging.exception("Insert new record error !!")
+
+def insertDataSetID(conn, package_name):
+    qs = insert_dataset_template.format("dataset", package_name)
+    try:
+        conn.query(qs)
+    except Exception as e:
+        logging.exception("Insert dataset id error !!")
+
+
+def UpdateDataSetToProcessed(conn, package_name):
+    qs = update_dataset.format(package_name)
+    try:
+        conn.query(qs)
+    except :
+        logging.exception("Update error !!")
+
+def InsertResourceURL(conn, package_name, file_id, url, format):
+    qs = insert_resource_template.format("resource_metadata", package_name, file_id, url, format)
+    try:
+        conn.query(qs)
+    except:
+        logging.exception("Insert error !!")
+
+
+def getNotProcessedDataSet(conn):
+    """
+    Get Array of non-porcessed dataset id
+    """
+    result =[]
+    try:
+        q = conn.query(query_not_porcessed_dataset)
+        for item in q.namedresult():
+            result.append(item.package_name)
+        return result
+    except Exception as e:
+        logging.exception("Query not processed  id error !!")
 
 def closeConnection(conn):
     """

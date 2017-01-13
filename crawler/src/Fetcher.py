@@ -8,6 +8,7 @@ import requests
 import datetime
 import DBUtil
 import logging
+import config
 
 logging.getLogger("schedule").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
@@ -18,7 +19,11 @@ class Fetcher(threading.Thread):
     Fetcher thread get metadata of newly updated opendata.
     """
 
-    def __init__(self, queue, sec=-1):
+    dataid = None
+
+    fetcher_id = -1
+
+    def __init__(self, queue, id , dataid=None, sec=-1):
         """
         queue: shared queue between Fetcher and Downloader
         sec: interval to fetch updated metadata, default is -1,
@@ -27,6 +32,9 @@ class Fetcher(threading.Thread):
         super(Fetcher, self).__init__()
         self.queue = queue
         self.updateInterval = sec
+        self.fetcher_id = id
+        self.dataid = dataid
+
         if self.updateInterval > 0:
             schedule.every(self.updateInterval).seconds.do(self.fetchNewMetadata)
 
@@ -44,18 +52,54 @@ class Fetcher(threading.Thread):
         conn = DBUtil.createConnection()
         latestTime = DBUtil.getLastUpdateEpoch(conn)
         DBUtil.closeConnection(conn)
-
         dataid = self.findUpdateDataID(latestTime)
+        logger.debug(len(dataid))
+        dataid_count = 0
+        meta_count = 0
         for s in dataid:
+            dataid_count = dataid_count +1
+            logger.info("data count = " + str(dataid_count))
             meta = Metadata.getMetaData(s, self.timeStr)
             for md in meta:
+                meta_count = meta_count + 1
+                logger.info("meta_count = "+ str(meta_count))
                 logger.debug(md.getResourceID() + " put to queue")
                 self.queue.put(md)
 
+    def first_run_history2(self):
+        logger.debug(str(self.fetcher_id) + " _ "+str(len(self.dataid)))
+
+        self.timeStr = self.buildQueryTimeStr()
+        data_count = 0
+        conn = None
+        for index in range(self.fetcher_id, len(self.dataid), config.fetcher_num):
+            meta = Metadata.getMetaData(self.dataid[index], self.timeStr)
+
+            conn = DBUtil.createConnection()
+            DBUtil.UpdateDataSetToProcessed(conn, self.dataid[index])
+
+            data_count = data_count + 1
+            # logger.debug("Fetcher {" + str(self.fetcher_id)+"} query {" + str(data_count) + "} data set "
+            #              + self.dataid[index] +
+            #              " has {" + str(len(meta)) + "} resource")
+            logger.debug("Fetcher [{}] query [{}] dataset [{}] @ dataid[{}] + has [{}] resource"
+                         .format(str(self.fetcher_id), str(data_count), self.dataid[index], index, str(len(meta))))
+            for m in meta:
+                DBUtil.InsertResourceURL(conn, m.getDataSetID(),m.getFileID() ,m.getDownloadURL(), m.getFormat())
+                logger.debug( "Fetcher {" + str(self.fetcher_id) + "} " +
+                m.getDownloadURL() + " " +
+                m.getFormat() + " " +
+                m.getDataSetID() + " " +
+                m.getFileID() + " " +
+                m.getResourceID() )
+
+        DBUtil.closeConnection(conn)
 
     def run(self):
-        if self.updateInterval == -1:
+        if self.dataid is None:
             self.process_history()
+        elif self.dataid is not None:
+            self.first_run_history2()
             return
 
         while True:
