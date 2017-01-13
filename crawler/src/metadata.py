@@ -84,9 +84,17 @@ class Metadata(object):
             abspath = config.DOWNLOAD_PATH+"/"+dir_name
             
             # to avoid the bad connection
-            response = requests.get(URL,stream=True,verify=False,headers={'Connection':'close'})
+            try:
+			    response = requests.get(URL,stream=True,verify=False,headers={'Connection':'close'})
             
-            self.downloadStatusCode = response.status_code
+            
+            # to avoid download invalid resources
+            x = json.loads(response.text)
+            if x.get("success","NA") == False:
+                # set invalid resource's status code = -1
+                self.downloadStatusCode = -1
+            else:
+                self.downloadStatusCode = response.status_code
 
             
             
@@ -147,7 +155,7 @@ class Metadata(object):
                 elif fileTypeFromFormat != "NA":
                     fileType = fileTypeFromFormat
                 
-            
+            # write the download file
             with open(file_name, 'wb') as f:
                 for chunk in response.iter_content(chunk_size=1024):
                     if chunk:
