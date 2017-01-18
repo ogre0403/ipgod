@@ -4,8 +4,8 @@ import logging.config
 import DBUtil, config
 import datetime, requests
 
-
 import logging
+logging.getLogger("schedule").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
@@ -25,7 +25,7 @@ class Downloader(threading.Thread):
         if self.queue is None:
             conn = DBUtil.createConnection()
             row = self.getResourceFromDB(conn)
-            while row is not None:
+            while len(row.namedresult()) is not 0:
                 self.process(conn, row)
                 row = self.getResourceFromDB(conn)
 
@@ -61,7 +61,8 @@ class Downloader(threading.Thread):
     # Implementation of Issue #22
     def process(self, conn, row):
 
-        r = row.nameresult()
+        rlist = row.namedresult()
+        r = rlist[0]
 
         # update processed to True
         update_str = "UPDATE resource_metadata set processed=TRUE WHERE id = '{}'".format(r.id)
@@ -84,7 +85,7 @@ class Downloader(threading.Thread):
         # write result to DB
         now = datetime.datetime.now()
         timeStr = (now - datetime.timedelta(seconds=config.update_interval_sec)).strftime('%Y-%m-%d %H:%M:%S')
-        DBUtil.insertDownloadResult(conn, r.package_name, r.resource_id, status, timeStr)
+        DBUtil.insertDownloadResult(conn, r.package_name, r.resource_id, timeStr, status)
 
     def download(self, nameresult):
         URL = nameresult.url
@@ -95,8 +96,12 @@ class Downloader(threading.Thread):
 
         abspath = config.DOWNLOAD_PATH + "/" + dir_name
 
-        # to avoid the bad connection
-        response = requests.get(URL, stream=True, verify=False, headers={'Connection': 'close'})
+        # to avoid the bad connection and invalid URL
+        try:
+            response = requests.get(URL, stream=True, verify=False, headers={'Connection': 'close'})
+        except:
+            logger.exception("Request error at "+URL)
+            return -1
 
         file_name = abspath + name + "." + nameresult.format.strip(";\"").lower()
 

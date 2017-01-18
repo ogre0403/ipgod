@@ -12,6 +12,8 @@ logging_configure_file = "logging.ini"
 
 update_interval_sec = 60
 
-downloader_num = 4
+downloader_num = 10
+# fetcher_num = 10
+# testing
 fetcher_num = 10
 

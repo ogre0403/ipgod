@@ -61,6 +61,7 @@ def insertDownloadResult(conn, package_name, file_id, timeStr, status):
     :param status: small int
     :return:
     """
+    logger.debug(timeStr)
     qs = q_string2_template.format(const.DB_TABLE, package_name, file_id, timeStr, status)
     try:
         conn.query(qs)

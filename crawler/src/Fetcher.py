@@ -10,7 +10,7 @@ import DBUtil
 import logging
 import config
 
-logging.getLogger("schedule").setLevel(logging.WARNING)
+logging.getLogger("schedule").setLevel(logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -92,6 +92,9 @@ class Fetcher(threading.Thread):
                 m.getDataSetID() + " " +
                 m.getFileID() + " " +
                 m.getResourceID() )
+
+        # TODO: download resourse
+
 
         DBUtil.closeConnection(conn)
 

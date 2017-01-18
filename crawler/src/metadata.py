@@ -26,14 +26,14 @@ class Metadata(object):
             if x.get("success") == False:
                 return []
         except:
-            logging.exception(dataid + "Json load  error !!")
+            logging.exception(dataid + "Json load error !!")
 
         Metadata.getLogFile(x, dataid)
         result = []
 
         if x["result"]["distribution"] != None:
             for element in x["result"]["distribution"]:
-                obj = Metadata(element, timeStr)
+                obj = Metadata(element, timeStr, dataid)
                 result.append(obj)
         else:
             # Some data set has no resource field in JSON format
@@ -41,14 +41,14 @@ class Metadata(object):
             logger.warn("dataid = " + dataid+ " has no distribution field")
         return result
 
-    def __init__(self, x, timeStr):
+    def __init__(self, x, timeStr, dataid):
         self.timeStr = timeStr
         self.resourceID = x.get('resourceID')
         # eg. resourceID = A59000000N-000229-001
         #     datasetID = A59000000N-000229
 
         #todo: issue #21 resourceID is not always correct
-        self.datasetID = self.resourceID[:-4]
+        self.datasetID = dataid
         self.resourceDescription = x.get('resourceDescription')
         self.format = x.get('format',"NA")
         if self.format == "NA":
@@ -64,8 +64,7 @@ class Metadata(object):
         self.metadataSourceOfData = x['metadataSourceOfData']
         self.characterSetCode = x['characterSetCode']
 
-    def getDataID(self):
-        return self.dataid
+
 
     def download(self):
         """
@@ -88,10 +87,8 @@ class Metadata(object):
             abspath = config.DOWNLOAD_PATH+"/"+dir_name
             
             # to avoid the bad connection
-            try:
-			    response = requests.get(URL,stream=True,verify=False,headers={'Connection':'close'})
-            
-            
+
+            response = requests.get(URL, stream=True, verify=False, headers={'Connection': 'close'})
             # to avoid download invalid resources
             x = json.loads(response.text)
             if x.get("success","NA") == False:
@@ -100,12 +97,12 @@ class Metadata(object):
             else:
                 self.downloadStatusCode = response.status_code
 
-            
+
             
             # Save download status in postgreSQL DB
             conn = DBUtil.createConnection()
             DBUtil.insertDownloadResult(conn,
-                                        self.resourceID[:-4], self.resourceID[-3:],
+                                        self.datasetID, self.resourceID,
                                         self.timeStr, self.downloadStatusCode)
             DBUtil.closeConnection(conn)
             
@@ -174,14 +171,17 @@ class Metadata(object):
     def getOrganization(self):
         return self.organization
 
+    # return to fetcher.py_88
     def getDataSetID(self):
         return self.datasetID
 
     def getResourceID(self):
         return self.resourceID
 
+    # return to fetcher.py_88
     def getFileID(self):
-        return self.resourceID.split("-")[-1]
+        # return self.resourceID.split("-")[-1]
+        return self.resourceID
 
     def getResourceDescription(self):
         return self.resourceDescription
