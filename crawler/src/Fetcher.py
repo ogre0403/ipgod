@@ -85,12 +85,11 @@ class Fetcher(threading.Thread):
             logger.debug("Fetcher [{}] query [{}] dataset [{}] @ dataid[{}] + has [{}] resource"
                          .format(str(self.fetcher_id), str(data_count), self.dataid[index], index, str(len(meta))))
             for m in meta:
-                DBUtil.InsertResourceURL(conn, m.getDataSetID(),m.getFileID() ,m.getDownloadURL(), m.getFormat())
+                DBUtil.InsertResourceURL(conn, m.getDataSetID(),m.getResourceID() ,m.getDownloadURL(), m.getFormat())
                 logger.debug( "Fetcher {" + str(self.fetcher_id) + "} " +
                 m.getDownloadURL() + " " +
                 m.getFormat() + " " +
                 m.getDataSetID() + " " +
-                m.getFileID() + " " +
                 m.getResourceID() )
 
         # TODO: download resourse

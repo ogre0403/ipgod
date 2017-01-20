@@ -14,6 +14,9 @@ logger = logging.getLogger(__name__)
 def main():
 
     SHARE_Q = queue.Queue()
+
+    # TODO:
+    # ---- Even though first_run.py restart, all data id should fetch ONLY ONE time -----
     conn = DBUtil.createConnection()
 
     r = requests.get(const.METADATA_URL_PREFIX)
@@ -21,11 +24,12 @@ def main():
 
     dataset = x['result']
     count = 1
-
+    logger.debug("current data id size is " + str(len(dataset)))
     for id in dataset:
         DBUtil.insertDataSetID(conn, id)
-        # logger.debug(str(count) + " _ " + id)
+        logger.debug(str(count) + " _ " + id)
         count = count +1
+    # ---- Even though first_run.py restart, all data id should fetch ONLY ONE time -----
 
     count = 1
     dataid = DBUtil.getNotProcessedDataSet(conn)
@@ -42,6 +46,13 @@ def main():
             fetchers.append(Fetcher(SHARE_Q, i, dataid))
             fetchers[i].start()
 
+    # Block at main(), Downloader will start after all fetchers finish
+    if config.fetcher_num > 0 :
+        for i in range(config.fetcher_num):
+            fetchers[i].join()
+
+    # TODO: read resource info from resource_metadata table, and put into SHARE_Q
+    # Use queue to guarantee thread-safe, and can re-use the same logic?
     downloaders = []
     if config.downloader_num > 0:
         for i in range(config.downloader_num):

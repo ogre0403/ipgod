@@ -47,7 +47,6 @@ class Metadata(object):
         # eg. resourceID = A59000000N-000229-001
         #     datasetID = A59000000N-000229
 
-        #todo: issue #21 resourceID is not always correct
         self.datasetID = dataid
         self.resourceDescription = x.get('resourceDescription')
         self.format = x.get('format',"NA")
@@ -179,9 +178,8 @@ class Metadata(object):
         return self.resourceID
 
     # return to fetcher.py_88
-    def getFileID(self):
-        # return self.resourceID.split("-")[-1]
-        return self.resourceID
+    # def getFileID(self):
+    #     return self.resourceID
 
     def getResourceDescription(self):
         return self.resourceDescription

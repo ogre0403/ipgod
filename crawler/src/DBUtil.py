@@ -83,8 +83,8 @@ def UpdateDataSetToProcessed(conn, package_name):
     except :
         logging.exception("Update error !!")
 
-def InsertResourceURL(conn, package_name, file_id, url, format):
-    qs = insert_resource_template.format("resource_metadata", package_name, file_id, url, format)
+def InsertResourceURL(conn, package_name, resource_id, url, format):
+    qs = insert_resource_template.format("resource_metadata", package_name, resource_id, url, format)
     try:
         conn.query(qs)
     except:

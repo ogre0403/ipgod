@@ -14,14 +14,14 @@ CREATE TABLE ckan_download (
 CREATE TABLE resource_metadata(
     id              serial, 
     package_name    text  NOT NULL,
-	resource_id     text  NOT NULL,
+    resource_id     text  NOT NULL,
     url             text,             
-	format          text, 
-	processed       boolean
+    format          text, 
+    processed       boolean
 );
 
 CREATE TABLE dataset(
-    package_name    VARCHAR(30)  NOT NULL,
+    package_name    text  NOT NULL,
     processed       boolean
 );
 ```
