@@ -12,6 +12,7 @@ update_dataset = "UPDATE dataset set processed=TRUE WHERE package_name = '{}' "
 
 insert_resource_template = "INSERT INTO {} VALUES (nextval('resource_metadata_id_seq'),'{}', '{}','{}','{}', FALSE)"
 
+query_dataset = "SELECT package_name from dataset"
 
 logger = logging.getLogger(__name__)
 
@@ -74,6 +75,18 @@ def insertDataSetID(conn, package_name):
         conn.query(qs)
     except Exception as e:
         logging.exception("Insert dataset id error !!")
+
+def isDatasetEmpty(conn):
+    qs = query_dataset
+    try:
+        res = conn.query(qs)
+        if len(res.namedresult()) is 0:
+            return True
+        else:
+            return False
+    except:
+        logging.exception("Select dataset error!!")
+        return False
 
 
 def UpdateDataSetToProcessed(conn, package_name):

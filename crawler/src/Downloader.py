@@ -19,15 +19,15 @@ class Downloader(threading.Thread):
         self.count = 0
 
     def run(self):
-
         # Download info is from DB
         # issue #22
         if self.queue is None:
             conn = DBUtil.createConnection()
             row = self.getResourceFromDB(conn)
             while len(row.namedresult()) is not 0:
-                self.process(conn, row)
+
                 row = self.getResourceFromDB(conn)
+                self.process(conn, row)
 
             DBUtil.closeConnection(conn)
             return

@@ -1,3 +1,4 @@
+import downloadData
 from metadata import Metadata
 import schedule
 import time
@@ -9,6 +10,7 @@ import datetime
 import DBUtil
 import logging
 import config
+
 
 logging.getLogger("schedule").setLevel(logging.INFO)
 logger = logging.getLogger(__name__)
@@ -86,14 +88,17 @@ class Fetcher(threading.Thread):
                          .format(str(self.fetcher_id), str(data_count), self.dataid[index], index, str(len(meta))))
             for m in meta:
                 DBUtil.InsertResourceURL(conn, m.getDataSetID(),m.getResourceID() ,m.getDownloadURL(), m.getFormat())
+
+
+                row = downloadData(m.getDownloadURL(),m.getFormat(),m.getDataSetID(),m.getResourceID())
+                self.queue.put(row)
+
+
                 logger.debug( "Fetcher {" + str(self.fetcher_id) + "} " +
                 m.getDownloadURL() + " " +
                 m.getFormat() + " " +
                 m.getDataSetID() + " " +
                 m.getResourceID() )
-
-        # TODO: download resourse
-
 
         DBUtil.closeConnection(conn)
 
