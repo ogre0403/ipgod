@@ -1,4 +1,4 @@
-import downloadData
+from downloadData import downloadData
 from metadata import Metadata
 import schedule
 import time
@@ -89,7 +89,7 @@ class Fetcher(threading.Thread):
             for m in meta:
                 DBUtil.InsertResourceURL(conn, m.getDataSetID(),m.getResourceID() ,m.getDownloadURL(), m.getFormat())
 
-
+                # building a downloadData and using queue to get the downloadData
                 row = downloadData(m.getDownloadURL(),m.getFormat(),m.getDataSetID(),m.getResourceID())
                 self.queue.put(row)
 
