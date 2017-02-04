@@ -25,7 +25,7 @@ class downloadData:
         try:
             response = requests.get(URL, stream=True, verify=False, headers={'Connection': 'close'})
         except:
-            logger.exception("Request error at " + URL)
+            logger.debug("Request error at " + URL)
             return -1
 
         file_name = abspath + name + "." + self.format.strip(";\"").lower()
@@ -37,3 +37,12 @@ class downloadData:
         logger.info("Download completed. File path: " + file_name)
 
         return response.status_code
+
+    def getResourceID(self):
+        return self.resourceID
+    def getDataSetID(self):
+        return self.dataSetID
+    def getURL(self):
+        return self.URL
+    def getFormat(self):
+        return self.format

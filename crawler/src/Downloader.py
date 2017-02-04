@@ -17,8 +17,10 @@ class Downloader(threading.Thread):
         super(Downloader, self).__init__()
         self.queue = queue
         self.count = 0
+        self.fetcher_id = id
 
     def run(self):
+
         # Download info is from DB
         # issue #22
         if self.queue is None:
