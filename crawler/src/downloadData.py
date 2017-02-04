@@ -1,6 +1,8 @@
 import logging
 import config
 import requests
+import datetime
+import DBUtil
 
 logging.getLogger("download").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
@@ -11,6 +13,14 @@ class downloadData:
         self.format = format
         self.dataSetID = dataSetID
         self.resourceID = resourceID
+
+    def writeDownloadData(self):
+        # write download result to DB
+        conn = DBUtil.createConnection()
+        now = datetime.datetime.now()
+        timeStr = (now - datetime.timedelta(seconds=config.update_interval_sec)).strftime('%Y-%m-%d %H:%M:%S')
+        DBUtil.insertDownloadResult(conn, self.dataSetID, self.resourceID, timeStr, self.download())
+        DBUtil.closeConnection(conn)
 
     def download(self):
         URL = self.URL
@@ -35,7 +45,6 @@ class downloadData:
                 if chunk:
                     f.write(chunk)
         logger.info("Download completed. File path: " + file_name)
-
         return response.status_code
 
     def getResourceID(self):

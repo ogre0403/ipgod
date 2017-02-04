@@ -36,6 +36,7 @@ class Downloader(threading.Thread):
 
         # Download info from shared queue
         while True:
+
             if not self.queue.empty():
                 # Get metadata item from queue, and execute download logic
                 item = self.queue.get()
@@ -45,7 +46,9 @@ class Downloader(threading.Thread):
                 logger.info("Thread {" + str(threading.get_ident()) + "} has processed " + str(self.count) + " metadata")
                 try:
                     logger.info("Thread {" + str(threading.get_ident()) + "} start download " + item.getResourceID())
-                    self.download_flag = item.download()
+                    self.download_flag = item.writeDownloadData()
+
+
                 except Exception as e:
                     logging.exception(str(threading.get_ident()) + " download " + item.getResourceID() + " ERROR!!!")
 
