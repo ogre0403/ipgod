@@ -100,7 +100,7 @@ class Fetcher(threading.Thread):
                 m.getDataSetID() + " " +
                 m.getResourceID() )
 
-        DBUtil.closeConnection(conn)
+            DBUtil.closeConnection(conn)
 
     def run(self):
         if self.dataid is None:

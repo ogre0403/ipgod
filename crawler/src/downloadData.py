@@ -14,15 +14,15 @@ class downloadData:
         self.dataSetID = dataSetID
         self.resourceID = resourceID
 
-    def writeDownloadData(self):
+    def download(self):
         # write download result to DB
         conn = DBUtil.createConnection()
         now = datetime.datetime.now()
         timeStr = (now - datetime.timedelta(seconds=config.update_interval_sec)).strftime('%Y-%m-%d %H:%M:%S')
-        DBUtil.insertDownloadResult(conn, self.dataSetID, self.resourceID, timeStr, self.download())
+        DBUtil.insertDownloadResult(conn, self.dataSetID, self.resourceID, timeStr, self.writeData())
         DBUtil.closeConnection(conn)
 
-    def download(self):
+    def writeData(self):
         URL = self.URL
         logger.info("download from " + URL)
 

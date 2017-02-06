@@ -17,26 +17,10 @@ class Downloader(threading.Thread):
         super(Downloader, self).__init__()
         self.queue = queue
         self.count = 0
-        self.fetcher_id = id
 
     def run(self):
-
-        # Download info is from DB
-        # issue #22
-        if self.queue is None:
-            conn = DBUtil.createConnection()
-            row = self.getResourceFromDB(conn)
-            while len(row.namedresult()) is not 0:
-
-                row = self.getResourceFromDB(conn)
-                self.process(conn, row)
-
-            DBUtil.closeConnection(conn)
-            return
-
         # Download info from shared queue
         while True:
-
             if not self.queue.empty():
                 # Get metadata item from queue, and execute download logic
                 item = self.queue.get()
@@ -46,8 +30,7 @@ class Downloader(threading.Thread):
                 logger.info("Thread {" + str(threading.get_ident()) + "} has processed " + str(self.count) + " metadata")
                 try:
                     logger.info("Thread {" + str(threading.get_ident()) + "} start download " + item.getResourceID())
-                    self.download_flag = item.writeDownloadData()
-
+                    self.download_flag = item.download()
 
                 except Exception as e:
                     logging.exception(str(threading.get_ident()) + " download " + item.getResourceID() + " ERROR!!!")

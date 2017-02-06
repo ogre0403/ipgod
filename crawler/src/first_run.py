@@ -46,13 +46,13 @@ def main():
             fetchers.append(Fetcher(SHARE_Q, i, dataid))
             fetchers[i].start()
 
-
     # Block at main(), Downloader will start after all fetchers finish
     '''
     if config.fetcher_num > 0 :
         for i in range(config.fetcher_num):
             fetchers[i].join()
     '''
+
     # TODO:
     # read resource info from resource_metadata table, and put into SHARE_Q
     # Use queue to guarantee thread-safe, and can re-use the same logic?
