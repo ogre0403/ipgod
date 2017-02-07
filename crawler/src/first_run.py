@@ -24,11 +24,13 @@ def main():
 
         dataset = x['result']
         count = 1
-        logger.debug("current data id size is " + str(len(dataset)))
+        logger.debug("Current data id size is " + str(len(dataset)))
         for id in dataset:
             DBUtil.insertDataSetID(conn, id)
             logger.debug(str(count) + " _ " + id)
             count = count +1
+        # set a finished flag to ensure wouldn't redo
+        DBUtil.insertDataSetDoneFlag(conn)
     # ---- Even though first_run.py restart, all data id should fetch ONLY ONE time -----
 
     count = 1

@@ -19,7 +19,10 @@ class downloadData:
         conn = DBUtil.createConnection()
         now = datetime.datetime.now()
         timeStr = (now - datetime.timedelta(seconds=config.update_interval_sec)).strftime('%Y-%m-%d %H:%M:%S')
-        DBUtil.insertDownloadResult(conn, self.dataSetID, self.resourceID, timeStr, self.writeData())
+        download_flag = self.writeData()
+        DBUtil.insertDownloadResult(conn, self.dataSetID, self.resourceID, timeStr, download_flag)
+        if download_flag is not -1:
+            DBUtil.UpdateResourceToProcessed(conn, self.resourceID)
         DBUtil.closeConnection(conn)
 
     def writeData(self):
@@ -34,17 +37,17 @@ class downloadData:
         # to avoid the bad connection and invalid URL
         try:
             response = requests.get(URL, stream=True, verify=False, headers={'Connection': 'close'})
+
+            file_name = abspath + name + "." + self.format.strip(";\"").lower()
+
+            with open(file_name, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=1024):
+                    if chunk:
+                        f.write(chunk)
+            logger.info("Download completed. File path: " + file_name)
         except:
             logger.debug("Request error at " + URL)
             return -1
-
-        file_name = abspath + name + "." + self.format.strip(";\"").lower()
-
-        with open(file_name, 'wb') as f:
-            for chunk in response.iter_content(chunk_size=1024):
-                if chunk:
-                    f.write(chunk)
-        logger.info("Download completed. File path: " + file_name)
         return response.status_code
 
     def getResourceID(self):
