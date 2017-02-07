@@ -3,8 +3,8 @@ import threading
 import logging.config
 import DBUtil, config
 import datetime, requests
-
 import logging
+
 logging.getLogger("schedule").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
@@ -19,34 +19,20 @@ class Downloader(threading.Thread):
         self.count = 0
 
     def run(self):
-
-        # Download info is from DB
-        # issue #22
-        if self.queue is None:
-            conn = DBUtil.createConnection()
-            row = self.getResourceFromDB(conn)
-            while len(row.namedresult()) is not 0:
-                self.process(conn, row)
-                row = self.getResourceFromDB(conn)
-
-            DBUtil.closeConnection(conn)
-            return
-
         # Download info from shared queue
-        while True:
-            if not self.queue.empty():
-                # Get metadata item from queue, and execute download logic
-                item = self.queue.get()
+        while not self.queue.empty():
+            # Get metadata item from queue, and execute download logic
+            item = self.queue.get()
 
-                # Get the flag to check whether the download task is OK or not
-                self.count = self.count + 1
-                logger.info("Thread {" + str(threading.get_ident()) + "} has processed " + str(self.count) + " metadata")
-                try:
-                    logger.info("Thread {" + str(threading.get_ident()) + "} start download " + item.getResourceID())
-                    self.download_flag = item.download()
-                except Exception as e:
-                    logging.exception(str(threading.get_ident()) + " download " + item.getResourceID() + " ERROR!!!")
+            # Get the flag to check whether the download task is OK or not
+            self.count = self.count + 1
+            logger.info("Thread {" + str(threading.get_ident()) + "} has processed " + str(self.count) + " metadata")
+            try:
+                logger.info("Thread {" + str(threading.get_ident()) + "} start download " + item.getResourceID())
+                self.download_flag = item.download()
 
+            except Exception as e:
+                logging.exception(str(threading.get_ident()) + " download " + item.getResourceID() + " ERROR!!!")
 
     def getResourceFromDB(self, conn):
 
