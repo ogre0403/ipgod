@@ -10,12 +10,12 @@ insert_dataset = "INSERT INTO {} VALUES ('{}' , TRUE )"
 insert_dataset_template = "INSERT INTO {} VALUES ('{}' , FALSE )"
 query_not_porcessed_dataset = "SELECT package_name from dataset where processed = FALSE"
 update_dataset = "UPDATE dataset set processed=TRUE WHERE package_name = '{}' "
-update_resource = "UPDATE resource_metadata set processed=TRUE WHERE package_name = '{}' "
+update_resource = "UPDATE resource_metadata set processed=TRUE WHERE resource_id = '{}' "
 
 insert_resource_template = "INSERT INTO {} VALUES (nextval('resource_metadata_id_seq'),'{}', '{}','{}','{}', FALSE)"
 
 query_dataset = "SELECT package_name from dataset"
-query_dataset_done = "SELECT package_name from dataset WHERE package_name = 'done'"
+query_dataset_done = "SELECT package_name from dataset WHERE package_name = 'Done'"
 
 logger = logging.getLogger(__name__)
 

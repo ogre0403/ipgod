@@ -22,6 +22,7 @@ class downloadData:
         download_flag = self.writeData()
         DBUtil.insertDownloadResult(conn, self.dataSetID, self.resourceID, timeStr, download_flag)
         if download_flag is not -1:
+            logging.info("set"+self.resourceID+"processed to DB")
             DBUtil.UpdateResourceToProcessed(conn, self.resourceID)
         DBUtil.closeConnection(conn)
 
