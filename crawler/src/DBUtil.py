@@ -16,6 +16,7 @@ insert_resource_template = "INSERT INTO {} VALUES (nextval('resource_metadata_id
 
 query_dataset = "SELECT package_name from dataset"
 query_dataset_done = "SELECT package_name from dataset WHERE package_name = 'Done'"
+query_resource_count = "SELECT COUNT(*) from resource_metadata WHERE package_name = '{}' AND resource_id = '{}' AND url = '{}' AND format = '{}'"
 
 logger = logging.getLogger(__name__)
 
@@ -85,6 +86,18 @@ def insertDataSetDoneFlag(conn):
         conn.query(qs)
     except:
         logging.exception("Insert Done flag error !!")
+
+def isResourceURLExist(conn,package_name, resource_id, url, format):
+    qs = query_resource_count.format(package_name, resource_id, url, format)
+    try:
+        res = conn.query(qs)
+        if res.namedresult()[0][0] is 0:
+            return False
+        else:
+            return True
+    except:
+        logging.exception("Select resource_metadata error !!")
+        return False
 
 def isDatasetEmpty(conn):
     qs = query_dataset

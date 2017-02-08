@@ -78,7 +78,10 @@ class Fetcher(threading.Thread):
             meta = Metadata.getMetaData(self.dataid[index], self.timeStr)
 
             conn = DBUtil.createConnection()
-            DBUtil.UpdateDataSetToProcessed(conn, self.dataid[index])
+
+            # To solve the restart problem
+            # Solution: all processed flag will be set after download
+            # DBUtil.UpdateDataSetToProcessed(conn, self.dataid[index])
 
             data_count = data_count + 1
             # logger.debug("Fetcher {" + str(self.fetcher_id)+"} query {" + str(data_count) + "} data set "
@@ -87,7 +90,8 @@ class Fetcher(threading.Thread):
             logger.debug("Fetcher [{}] query [{}] dataset [{}] @ dataid[{}] + has [{}] resource"
                          .format(str(self.fetcher_id), str(data_count), self.dataid[index], index, str(len(meta))))
             for m in meta:
-                DBUtil.InsertResourceURL(conn, m.getDataSetID(),m.getResourceID() ,m.getDownloadURL(), m.getFormat())
+                if DBUtil.isResourceURLExist(conn,m.getDataSetID(),m.getResourceID() ,m.getDownloadURL(), m.getFormat()) is False:
+                    DBUtil.InsertResourceURL(conn, m.getDataSetID(),m.getResourceID() ,m.getDownloadURL(), m.getFormat())
 
                 # building a downloadData and using queue to get the downloadData
                 row = downloadData(m.getDownloadURL(),m.getFormat(),m.getDataSetID(),m.getResourceID())

@@ -24,6 +24,7 @@ class downloadData:
         if download_flag is not -1:
             logging.info("set"+self.resourceID+"processed to DB")
             DBUtil.UpdateResourceToProcessed(conn, self.resourceID)
+            DBUtil.UpdateDataSetToProcessed(conn, self.dataSetID)
         DBUtil.closeConnection(conn)
 
     def writeData(self):
