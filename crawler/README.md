@@ -3,12 +3,26 @@
 ### Create database and table
 ```SQL
 CREATE TABLE ckan_download (
-	package_name    CHAR(17) NOT NULL,
-	file_id         CHAR(3)  NOT NULL, 
+	package_name    text  NOT NULL,
+	resource_id     text  NOT NULL, 
 	download_time   TIMESTAMP WITH TIME ZONE,
 	status          SMALLINT,
 	processed       boolean, 
 	skip            boolean
+);
+
+CREATE TABLE resource_metadata(
+    id              serial, 
+    package_name    text  NOT NULL,
+    resource_id     text  NOT NULL,
+    url             text,             
+    format          text, 
+    processed       boolean
+);
+
+CREATE TABLE dataset(
+    package_name    text  NOT NULL,
+    processed       boolean
 );
 ```
 

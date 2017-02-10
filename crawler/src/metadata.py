@@ -21,17 +21,19 @@ class Metadata(object):
         """
         logger.info("Get Resource ID of dataid = " + dataid)
         r = requests.get(const.METADATA_URL_PREFIX + dataid)
-        x = json.loads(r.text)
-
-        if x.get("success") == False:
-            return []
+        try:
+            x = json.loads(r.text)
+            if x.get("success") == False:
+                return []
+        except:
+            logging.exception(dataid + "Json load error !!")
 
         Metadata.getLogFile(x, dataid)
         result = []
 
         if x["result"]["distribution"] != None:
             for element in x["result"]["distribution"]:
-                obj = Metadata(element, timeStr)
+                obj = Metadata(element, timeStr, dataid)
                 result.append(obj)
         else:
             # Some data set has no resource field in JSON format
@@ -39,12 +41,13 @@ class Metadata(object):
             logger.warn("dataid = " + dataid+ " has no distribution field")
         return result
 
-    def __init__(self, x, timeStr):
+    def __init__(self, x, timeStr, dataid):
         self.timeStr = timeStr
         self.resourceID = x.get('resourceID')
         # eg. resourceID = A59000000N-000229-001
         #     datasetID = A59000000N-000229
-        self.datasetID = self.resourceID[:-4]
+
+        self.datasetID = dataid
         self.resourceDescription = x.get('resourceDescription')
         self.format = x.get('format',"NA")
         if self.format == "NA":
@@ -60,8 +63,7 @@ class Metadata(object):
         self.metadataSourceOfData = x['metadataSourceOfData']
         self.characterSetCode = x['characterSetCode']
 
-    def getDataID(self):
-        return self.dataid
+
 
     def download(self):
         """
@@ -84,16 +86,22 @@ class Metadata(object):
             abspath = config.DOWNLOAD_PATH+"/"+dir_name
             
             # to avoid the bad connection
-            response = requests.get(URL,stream=True,verify=False,headers={'Connection':'close'})
-            
-            self.downloadStatusCode = response.status_code
 
-            
+            response = requests.get(URL, stream=True, verify=False, headers={'Connection': 'close'})
+            # to avoid download invalid resources
+            x = json.loads(response.text)
+            if x.get("success","NA") == False:
+                # set invalid resource's status code = -1
+                self.downloadStatusCode = -1
+            else:
+                self.downloadStatusCode = response.status_code
+
+
             
             # Save download status in postgreSQL DB
             conn = DBUtil.createConnection()
             DBUtil.insertDownloadResult(conn,
-                                        self.resourceID[:-4], self.resourceID[-3:],
+                                        self.datasetID, self.resourceID,
                                         self.timeStr, self.downloadStatusCode)
             DBUtil.closeConnection(conn)
             
@@ -147,7 +155,7 @@ class Metadata(object):
                 elif fileTypeFromFormat != "NA":
                     fileType = fileTypeFromFormat
                 
-            
+            # write the download file
             with open(file_name, 'wb') as f:
                 for chunk in response.iter_content(chunk_size=1024):
                     if chunk:
@@ -162,11 +170,16 @@ class Metadata(object):
     def getOrganization(self):
         return self.organization
 
+    # return to fetcher.py_88
     def getDataSetID(self):
         return self.datasetID
 
     def getResourceID(self):
         return self.resourceID
+
+    # return to fetcher.py_88
+    # def getFileID(self):
+    #     return self.resourceID
 
     def getResourceDescription(self):
         return self.resourceDescription
@@ -178,7 +191,12 @@ class Metadata(object):
         return self.resourceModified
 
     def getDownloadURL(self):
-        return self.downloadURL
+        if hasattr(self, 'downloadURL'):
+            return self.downloadURL
+        elif hasattr(self, 'accessURL'):
+            return self.accessURL
+        else:
+            return ""
 
     def getMetadataSourceOfData(self):
         return self.metadataSourceOfData
