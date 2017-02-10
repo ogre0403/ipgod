@@ -2,7 +2,7 @@
 import threading
 import logging.config
 import DBUtil, config
-import datetime, requests
+import datetime, requests, time
 import logging
 
 logging.getLogger("schedule").setLevel(logging.WARNING)
@@ -34,6 +34,9 @@ class Downloader(threading.Thread):
 
                 except Exception as e:
                     logging.exception(str(threading.get_ident()) + " download " + item.getResourceID() + " ERROR!!!")
+            else:
+                logger.debug("Queue empty, sleep 60 sec...")
+                time.sleep(60)
 
     def getResourceFromDB(self, conn):
 

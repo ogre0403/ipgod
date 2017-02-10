@@ -17,7 +17,6 @@ def main():
 
         SHARE_Q = queue.Queue()
 
-        # TODO: Done
         # ---- Even though first_run.py restart, all data id should fetch ONLY ONE time -----
         conn = DBUtil.createConnection()
         if DBUtil.isDatasetEmpty(conn) is True:
@@ -56,10 +55,6 @@ def main():
             for i in range(config.fetcher_num):
                 fetchers[i].join()
         '''
-
-        # TODO:
-        # read resource info from resource_metadata table, and put into SHARE_Q
-        # Use queue to guarantee thread-safe, and can re-use the same logic?
 
         downloaders = []
         if config.downloader_num > 0:
