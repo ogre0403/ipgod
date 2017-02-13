@@ -29,7 +29,7 @@ CREATE TABLE extractor (
 );
 
 
-ALTER TABLE extractor OWNER TO thomas;
+ALTER TABLE extractor OWNER TO ipgod;
 
 --
 -- PostgreSQL database dump complete
