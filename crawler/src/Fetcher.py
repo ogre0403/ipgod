@@ -25,7 +25,7 @@ class Fetcher(threading.Thread):
 
     fetcher_id = -1
 
-    def __init__(self, queue, id , dataid=None, sec=-1):
+    def __init__(self, queue, id = None , dataid=None, sec=-1):
         """
         queue: shared queue between Fetcher and Downloader
         sec: interval to fetch updated metadata, default is -1,

@@ -86,24 +86,17 @@ class Metadata(object):
             abspath = config.DOWNLOAD_PATH+"/"+dir_name
             
             # to avoid the bad connection
-
-            response = requests.get(URL, stream=True, verify=False, headers={'Connection': 'close'})
-            # to avoid download invalid resources
-            x = json.loads(response.text)
-            if x.get("success","NA") == False:
-                # set invalid resource's status code = -1
-                self.downloadStatusCode = -1
-            else:
+            try:
+                response = requests.get(URL, stream=True, verify=False, headers={'Connection': 'close'})
                 self.downloadStatusCode = response.status_code
+            except:
 
-
-            
-            # Save download status in postgreSQL DB
-            conn = DBUtil.createConnection()
-            DBUtil.insertDownloadResult(conn,
-                                        self.datasetID, self.resourceID,
-                                        self.timeStr, self.downloadStatusCode)
-            DBUtil.closeConnection(conn)
+                # Save download status in postgreSQL DB
+                conn = DBUtil.createConnection()
+                DBUtil.insertDownloadResult(conn,
+                                            self.datasetID, self.resourceID,
+                                            self.timeStr, self.downloadStatusCode)
+                DBUtil.closeConnection(conn)
             
             # if status code != 200 will return false
             if self.downloadStatusCode != 200:

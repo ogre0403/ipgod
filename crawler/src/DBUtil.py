@@ -3,7 +3,7 @@ import const
 import config
 import logging
 
-q_string1_template = "select max(download_time at time zone 'Asia/Taipei') as last from {} "
+q_string1_template = "select min(download_time at time zone 'Asia/Taipei') as last from {} "
 q_string2_template = "INSERT INTO {} VALUES ( '{}', '{}',TIMESTAMP '{}' at time zone 'Asia/Taipei', {}, False, False)"
 
 insert_dataset = "INSERT INTO {} VALUES ('{}' , TRUE )"
