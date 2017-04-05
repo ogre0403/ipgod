@@ -33,7 +33,7 @@ class ipgoddb():
         rows=[]
         try:
             #self.cur.execute("SELECT package_name, status, datetime from import where  datetime > CURRENT_TIMESTAMP - INTERVAL '6000 secs' and status=200")
-            self.cur.execute("SELECT package_name, file_id from ckan_download  where status=200 and processed=FALSE and skip=FALSE and package_name != '' limit 1")
+            self.cur.execute("SELECT package_name, resource_id from ckan_download  where status=200 and processed=FALSE and skip=FALSE and package_name != '' limit 1")
             rows = self.cur.fetchall()
         except:
             logger.warn("select error")
@@ -43,7 +43,7 @@ class ipgoddb():
         return pkgs
 
     def skip_package(self, package, fileid=''):
-#        print "skip package %s" % (package)
+        print "skip package %s %s" % (package, fileid)
 #        self.cur.execute("UPDATE ckan_download SET skip=true where package_name like '{0}'".format(package))
         try:
             if fileid == '':
@@ -52,15 +52,16 @@ class ipgoddb():
                 self.conn.commit()
             else:
                 print "skip package %s, %s" % (package, fileid)
-                self.cur.execute("UPDATE ckan_download SET skip=TRUE where package_name like '{0}' and file_id like '{1}'".format(package, fileid))
+                print "UPDATE ckan_download SET skip=TRUE where package_name like '{0}' and resource_id like '{1}'".format(package, fileid)
+                self.cur.execute("UPDATE ckan_download SET skip=TRUE where package_name like '{0}' and resource_id like '{0}-{1}'".format(package, fileid))
                 self.conn.commit()
         except:
             logger.warn("skip packag error")
 
     def import_done(self, package, fileid):
         try:
-            self.cur.execute("UPDATE ckan_download SET processed=TRUE where package_name like %s and file_id like %s", (package, fileid))
-            self.cur.execute("UPDATE ckan_download SET skip=FALSE where package_name like %s and file_id like %s", (package, fileid))
+            self.cur.execute("UPDATE ckan_download SET processed=TRUE where package_name like %s and resource_id like %s", (package, fileid))
+            self.cur.execute("UPDATE ckan_download SET skip=FALSE where package_name like %s and resource_id like %s", (package, fileid))
             self.conn.commit()
         except:
             logger.warn("import done error")

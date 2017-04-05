@@ -36,6 +36,7 @@ class downloadPackage():
 	#test = self.ckan.action.user_show(id='thomas')
 	#test = self.ckan.action.get_news()
 	list_data = self.ckan.action.get_selection()
+	#print list_data
 	return list_data['list']
 
 
