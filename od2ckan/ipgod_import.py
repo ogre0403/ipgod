@@ -71,7 +71,7 @@ if __name__ == '__main__':
                     if rstatus == -3:
 			idb.skip_package(pkg, rid)
                         continue
-		    print "%s %s %s" % (pkg, rid, status)
+		    print "status: %s %s %s" % (pkg, rid, status)
 	    	    idb.import_pkg(pkg, rid, 0)
 		    if status == True:
 			idb.import_done(pkg, rid)

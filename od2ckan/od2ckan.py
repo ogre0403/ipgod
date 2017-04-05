@@ -97,6 +97,7 @@ class import2ckan():
 
 	    if self.check_resource(res['resourceid'].lower()) == True:
                 logger.info("resource %s exist" % res['resourceid'])
+		rres[rid] = True
 	    else:
       
 	        #print "upload file %s" % rfile

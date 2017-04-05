@@ -52,7 +52,6 @@ class ipgoddb():
                 self.conn.commit()
             else:
                 print "skip package %s, %s" % (package, fileid)
-                print "UPDATE ckan_download SET skip=TRUE where package_name like '{0}' and resource_id like '{1}'".format(package, fileid)
                 self.cur.execute("UPDATE ckan_download SET skip=TRUE where package_name like '{0}' and resource_id like '{0}-{1}'".format(package, fileid))
                 self.conn.commit()
         except:
@@ -60,8 +59,9 @@ class ipgoddb():
 
     def import_done(self, package, fileid):
         try:
-            self.cur.execute("UPDATE ckan_download SET processed=TRUE where package_name like %s and resource_id like %s", (package, fileid))
-            self.cur.execute("UPDATE ckan_download SET skip=FALSE where package_name like %s and resource_id like %s", (package, fileid))
+            self.cur.execute("UPDATE ckan_download SET processed=TRUE where package_name like '{0}' and resource_id like '{0}-{1}'".format(package, fileid))
+            self.conn.commit()
+            self.cur.execute("UPDATE ckan_download SET skip=FALSE where package_name like '{0}' and resource_id like '{0}-{1}'".format(package, fileid))
             self.conn.commit()
         except:
             logger.warn("import done error")
