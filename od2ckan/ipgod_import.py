@@ -1,5 +1,6 @@
 #!/bin/python
 # -*- coding: utf-8 -*-
+import sys
 import odtw
 import map2ckan
 #import tockan
@@ -10,6 +11,7 @@ import time
 import datetime
 import ipgodDB
 import ConfigParser
+import re
 
 LOGGING_FILE = 'ipgod-od2ckan.log'
 logging.basicConfig(filename=LOGGING_FILE,
@@ -19,19 +21,15 @@ logger = logging.getLogger('root')
 
 config = ConfigParser.ConfigParser()
 config.read('config.ini')
+skip_wall=-1
 
-
-if __name__ == '__main__':
-    idb = ipgodDB.ipgoddb()
-    rootpath=config.get('od2ckan', 'root_path')
-    while True:
-	error=''
-        pkgs = idb.get_pkgs()
+def run(pkgs, skip) :
+        error=''
         print "cout of package %i" % len(pkgs)
         for pkg in pkgs:
             pstatus = 0
             pstatus = idb.get_status(pkg, 'metadata')
-            if pstatus == -3:
+            if pstatus <= skip_wall and skip == 1:
 		idb.skip_package(pkg)
                 continue
 	    idb.import_pkg(pkg, 'metadata', 0)
@@ -64,26 +62,45 @@ if __name__ == '__main__':
 	    if res['package'][pkg] == True:
                 idb.update_pkg(pkg, 'metadata', 1)
 		res_data = res['resources']
-		for fileid, status in res_data.items():
-		    rids = fileid.split('-')
-		    rid = rids[-1]
-                    rstatus = idb.get_status(pkg, rid)
-                    if rstatus == -3:
-			idb.skip_package(pkg, rid)
+		for resourceid, status in res_data.items():
+                    #skippkgkw = re.compile('_')
+                    #if skippkgkw.search(resourceid) != '':
+                    #    idb.skip_package(pkg)
+                    #    print "skip , but ... should be fix! %s" % resourceid
+		    #rids = resourceid.split('-')
+		    #rid = rids[-1]
+                    rstatus = idb.get_status(pkg, resourceid)
+                    if pstatus <= skip_wall and skip == 1:
+			idb.skip_package(pkg, resourceid)
                         continue
-		    print "status: %s %s %s" % (pkg, rid, status)
-	    	    idb.import_pkg(pkg, rid, 0)
+		    print "status: %s %s %s" % (pkg, resourceid, status)
+	    	    idb.import_pkg(pkg, resourceid, 0)
 		    if status == True:
-			idb.import_done(pkg, rid)
-	    		idb.update_pkg(pkg, rid, 1)
+			idb.import_done(pkg, resourceid)
+	    		idb.update_pkg(pkg, resourceid, 1)
                     else:
 			rstatus = int(rstatus)
 			rstatus = rstatus-1
-	    		idb.update_pkg(pkg, rid, rstatus)
+	    		idb.update_pkg(pkg, resourceid, rstatus)
 	    else:
                 pstatus = int(pstatus)
                 pstatus = pstatus-1
 		idb.update_pkg(pkg, 'metadata', pstatus)
 
-	time.sleep(10)
+
+
+if __name__ == '__main__':
+    idb = ipgodDB.ipgoddb()
+    rootpath=config.get('od2ckan', 'root_path')
+
+    if len(sys.argv) == 2:
+	mpkgs = []
+        mpkgs.append(sys.argv[1])
+        print mpkgs
+        run(mpkgs, 0)
+    else:
+    	while True:
+            db_pkgs = idb.get_pkgs()
+	    run(db_pkgs, 1)
+	    time.sleep(8)
 

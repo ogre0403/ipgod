@@ -4,6 +4,7 @@ import json
 import io
 import logging
 import os.path
+import sys
 
 LOGGING_FILE = 'ipgod-od2ckan.log'
 logging.basicConfig(filename=LOGGING_FILE,
@@ -65,6 +66,8 @@ class od():
 
 if __name__ == '__main__': 
     jsonfile = 'testdata/data.txt'
+    if len(sys.argv) > 0:
+        jsonfile = sys.argv[1]
     odtw=od()
     odtw.display(jsonfile)
     data = odtw.read(jsonfile)

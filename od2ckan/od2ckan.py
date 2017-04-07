@@ -6,6 +6,7 @@ import os
 import logging
 import ConfigParser
 import sys
+import time
 
 from ckanapi import RemoteCKAN, NotAuthorized, NotFound, ValidationError, CKANAPIError, ServerIncompatibleError
 
@@ -70,6 +71,10 @@ class import2ckan():
 		extras = self.package['extras']
             )
 	    res = {self.package['name']:True}
+	except CKANAPIError as e:
+	    res = {self.package['name']:False}
+            print "CKANAPIError %s\n" % e
+            logger.info("add package %s fail: (%s)" % (self.package['name'], e))
 	except ValidationError as e:
 	    res = {self.package['name']:False}
 	    print "ValidationError %s\n" % e
@@ -83,6 +88,13 @@ class import2ckan():
 
 	rres = {}
 	for res in self.package['resources']:
+            
+	    time.sleep(4)
+            if res['resourceid'] == '':
+	        logger.info("dangerous resourceid  %s" % (res['resourceid']))
+		rid = res['resourceid']
+		rres[rid] = False
+	        continue
             if 'file' in res:
                 rfile = res['file']
             else:
