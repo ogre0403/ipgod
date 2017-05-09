@@ -1,3 +1,4 @@
+from downloadData import downloadData
 from metadata import Metadata
 import schedule
 import time
@@ -9,6 +10,7 @@ import datetime
 import DBUtil
 import logging
 import config
+
 
 logging.getLogger("schedule").setLevel(logging.INFO)
 logger = logging.getLogger(__name__)
@@ -23,7 +25,7 @@ class Fetcher(threading.Thread):
 
     fetcher_id = -1
 
-    def __init__(self, queue, id , dataid=None, sec=-1):
+    def __init__(self, queue, id = None , dataid=None, sec=-1):
         """
         queue: shared queue between Fetcher and Downloader
         sec: interval to fetch updated metadata, default is -1,
@@ -76,7 +78,10 @@ class Fetcher(threading.Thread):
             meta = Metadata.getMetaData(self.dataid[index], self.timeStr)
 
             conn = DBUtil.createConnection()
-            DBUtil.UpdateDataSetToProcessed(conn, self.dataid[index])
+
+            # To solve the restart problem
+            # Solution: all processed flag will be set after download
+            # DBUtil.UpdateDataSetToProcessed(conn, self.dataid[index])
 
             data_count = data_count + 1
             # logger.debug("Fetcher {" + str(self.fetcher_id)+"} query {" + str(data_count) + "} data set "
@@ -85,17 +90,21 @@ class Fetcher(threading.Thread):
             logger.debug("Fetcher [{}] query [{}] dataset [{}] @ dataid[{}] + has [{}] resource"
                          .format(str(self.fetcher_id), str(data_count), self.dataid[index], index, str(len(meta))))
             for m in meta:
-                DBUtil.InsertResourceURL(conn, m.getDataSetID(),m.getResourceID() ,m.getDownloadURL(), m.getFormat())
+                if DBUtil.isResourceURLExist(conn,m.getDataSetID(),m.getResourceID() ,m.getDownloadURL(), m.getFormat()) is False:
+                    DBUtil.InsertResourceURL(conn, m.getDataSetID(),m.getResourceID() ,m.getDownloadURL(), m.getFormat())
+
+                # building a downloadData and using queue to get the downloadData
+                row = downloadData(m.getDownloadURL(),m.getFormat(),m.getDataSetID(),m.getResourceID())
+                self.queue.put(row)
+
+
                 logger.debug( "Fetcher {" + str(self.fetcher_id) + "} " +
                 m.getDownloadURL() + " " +
                 m.getFormat() + " " +
                 m.getDataSetID() + " " +
                 m.getResourceID() )
 
-        # TODO: download resourse
-
-
-        DBUtil.closeConnection(conn)
+            DBUtil.closeConnection(conn)
 
     def run(self):
         if self.dataid is None:
