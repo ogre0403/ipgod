@@ -1,0 +1,28 @@
+{% extends "user/read.html" %}
+~                                                                               
+
+{% block primary_content_inner %}
+  <h2 class="hide-heading">{% block page_heading %}{{ _('DataBase') }}{% endblock %}</h2>
+  <div>
+  <table id = "example" class = "display",width = "100%" border = 1  cellspacing = "10" >
+  <thead>
+	<tr>
+		<th width = 40%>Name</th>
+		<th width = 40%>ID</th>
+		<th width = 20%>User</th>
+	</tr>
+  </thead>
+  <tbody>
+	{% for i in range(h.caeser_postsql(c.userobj.name) | length) %}
+		<tr>
+		{% for j in range(h.caeser_postsql(c.userobj.name)[i] | length) %}
+			<td>{{h.caeser_postsql(c.userobj.name)[i][j]}}</td>
+		{% endfor %}
+		</tr>
+	{% endfor %}
+  </tbody>
+  </table>
+  </div>
+{% endblock %}
+~                   ~                                         
+
