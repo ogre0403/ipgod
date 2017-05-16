@@ -4,7 +4,7 @@
 
 
 
-{% if h.caeser_ano_try(c.resource['id'])  %}
+{% if h.caeser_ano_try(c.resource['id'],c.userobj.name)  %}
 
 <a href= "/dataset/add_button/{{package_name}}/{{pack_id}}/{{pack_r_id}}/{{user_name}}"  class = "btn btn-danger" role="button" data-module-type="{{ obj_type }}"  >Record Data</a>
 

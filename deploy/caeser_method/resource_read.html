@@ -34,17 +34,19 @@
 
 	      <li>
 
-
 		{%if ".csv" in res.url and c.userobj.name %}
 	<a href="{{h.caeser_try_func(c.userobj.name,res.url)}}" class = "btn btn-success" role="button">Analysis</a>
 		{% endif %}
+
               </li>
               <li>
+
 		{%if c.userobj.name %}
-		<div class="follow_button">
-			{{h.caeser_ff( pkg.id ,pkg.name,c.resource['id'],c.userobj.name)}}
-	      	</div>
-		{% endif  %}
+                <div class="follow_button">
+		{{h.caeser_ff( pkg.id ,pkg.name,c.resource['id'],c.userobj.name)}}
+                </div>
+                {% endif  %}
+
 	      </li>
 
 

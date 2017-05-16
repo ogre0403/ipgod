@@ -26,12 +26,12 @@ def caeser_ffff(arg1,arg_package,arg_id,arg_name):
     return base.render_snippet('snippets/add_button.html',package_name = arg1,pack_id = arg_id,pack_r_id = arg_package,user_name = arg_name)
 
 
-def caeser_ano_try(arg_id):
+def caeser_ano_try(arg_id,arg_name):
     conn = psycopg2.connect(database = "ipgod",user="ckan_default",password="ckan_passwd",host="127.0.0.1",port="5432")
     #conn = psycopg2.connect(database = "testingdb",user="psqluser",password="postgres",host="127.0.0.1",port="5432")
     cur = conn.cursor()
 
-    sql = "SELECT * FROM  extractor WHERE resourceid = '%s'"%(arg_id)
+    sql = "SELECT * FROM  extractor WHERE resourceid = '%s' and ckanuser = '%s' "%(arg_id,arg_name)
     cur.execute(sql)
     rows = cur.fetchall()
     conn.close()

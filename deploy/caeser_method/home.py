@@ -91,7 +91,7 @@ class HomeController(base.BaseController):
         return base.render('home/license.html')
 
     def about(self):
-        return base.render('home/about.html')
+	return base.render('home/about.html')
 
     def suggest(self):
 	return base.render('home/suggest.html')

@@ -1183,9 +1183,9 @@ class PackageController(base.BaseController):
         h.redirect_to(controller='package', action='read', id=id)
 	
     def add_button(self,user_name,package_name,pack_r_id,id):
-	conn = psycopg2.connect(database = "testingdb",user="psqluser",password="postgres",host="127.0.0.1",port="5432")
+	conn = psycopg2.connect(database = "ipgod",user="ckan_default",password="ckan_passwd",host="127.0.0.1",port="5432")
     	cur = conn.cursor()
-    	sql = "INSERT INTO extractor (package_name,resourceid,ckanuser) VALUES ('%s','%s','%s')"%(package_name,id,user_name)
+    	sql = "INSERT INTO extractor (id,package_name,status,resourceid,ckanuser,skip) VALUES (0,'%s',0,'%s','%s',false)"%(package_name,id,user_name)
 
     	cur.execute(sql)
     	conn.commit()
