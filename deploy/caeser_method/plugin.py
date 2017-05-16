@@ -27,7 +27,8 @@ def caeser_ffff(arg1,arg_package,arg_id,arg_name):
 
 
 def caeser_ano_try(arg_id):
-    conn = psycopg2.connect(database = "testingdb",user="psqluser",password="postgres",host="127.0.0.1",port="5432")
+    conn = psycopg2.connect(database = "ipgod",user="ckan_default",password="ckan_passwd",host="127.0.0.1",port="5432")
+    #conn = psycopg2.connect(database = "testingdb",user="psqluser",password="postgres",host="127.0.0.1",port="5432")
     cur = conn.cursor()
 
     sql = "SELECT * FROM  extractor WHERE resourceid = '%s'"%(arg_id)
@@ -42,7 +43,8 @@ def caeser_ano_try(arg_id):
 
 
 def caeser_PostGresSql(arg_name):
-    conn = psycopg2.connect(database = "testingdb",user="psqluser",password="postgres",host="127.0.0.1",port="5432")
+    #conn = psycopg2.connect(database = "testingdb",user="psqluser",password="postgres",host="127.0.0.1",port="5432")
+    conn = psycopg2.connect(database = "ipgod",user="ckan_default",password="ckan_passwd",host="127.0.0.1",port="5432")
     cur = conn.cursor()
 
     sql = "SELECT * FROM  extractor WHERE ckanuser = '%s'"%(arg_name)
