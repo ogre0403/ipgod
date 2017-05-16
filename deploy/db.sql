@@ -31,18 +31,28 @@ SET default_with_oids = false;
 
 --
 -- Name: ckan_download; Type: TABLE; Schema: public; Owner: ckan_default; Tablespace: 
---
-
-CREATE TABLE ckan_download (
-    package_name character(17) NOT NULL,
-    file_id character(3) NOT NULL,
+    package_name text NOT NULL,
+    resource_id text NOT NULL,
     download_time timestamp with time zone,
     status smallint,
-    processed boolean
+    processed boolean,
+    skip boolean
 );
 
 
 ALTER TABLE ckan_download OWNER TO ckan_default;
+
+--
+-- Name: dataset; Type: TABLE; Schema: public; Owner: ckan_default; Tablespace: 
+--
+
+CREATE TABLE dataset (
+    package_name text NOT NULL,
+    processed boolean
+);
+
+
+ALTER TABLE dataset OWNER TO ckan_default;
 
 --
 -- Name: import; Type: TABLE; Schema: public; Owner: ckan_default; Tablespace: 
@@ -54,7 +64,7 @@ CREATE TABLE import (
     datetime timestamp with time zone,
     comment text,
     status smallint DEFAULT 0 NOT NULL,
-    file_id character(12)
+    file_id text
 );
 
 
@@ -82,6 +92,59 @@ ALTER SEQUENCE import_id_seq OWNED BY import.id;
 
 
 --
+-- Name: extractor; Type: TABLE; Schema: public; Owner: ckan_default; Tablespace: 
+--
+
+CREATE TABLE extractor (
+    id bigint DEFAULT nextval('import_id_seq'::regclass) NOT NULL,
+    package_name text,
+    status smallint DEFAULT 0 NOT NULL,
+    resourceid text,
+    ckanuser text,
+    skip boolean DEFAULT false
+);
+
+
+ALTER TABLE extractor OWNER TO ckan_default;
+
+--
+-- Name: resource_metadata; Type: TABLE; Schema: public; Owner: ckan_default; Tablespace: 
+--
+
+CREATE TABLE resource_metadata (
+    id integer NOT NULL,
+    package_name text NOT NULL,
+    resource_id text NOT NULL,
+    url text,
+    format text,
+    processed boolean
+);
+
+
+ALTER TABLE resource_metadata OWNER TO ckan_default;
+
+--
+-- Name: resource_metadata_id_seq; Type: SEQUENCE; Schema: public; Owner: ckan_default
+--
+
+CREATE SEQUENCE resource_metadata_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE resource_metadata_id_seq OWNER TO ckan_default;
+
+--
+-- Name: resource_metadata_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ckan_default
+--
+
+ALTER SEQUENCE resource_metadata_id_seq OWNED BY resource_metadata.id;
+
+
+--
 -- Name: id; Type: DEFAULT; Schema: public; Owner: ckan_default
 --
 
@@ -89,30 +152,10 @@ ALTER TABLE ONLY import ALTER COLUMN id SET DEFAULT nextval('import_id_seq'::reg
 
 
 --
--- Data for Name: ckan_download; Type: TABLE DATA; Schema: public; Owner: ckan_default
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ckan_default
 --
 
-
-
---
--- Data for Name: import; Type: TABLE DATA; Schema: public; Owner: ckan_default
---
-
-
-
---
--- Name: import_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ckan_default
---
-
-SELECT pg_catalog.setval('import_id_seq', 1, false);
-
-
---
--- Name: ckan_download_pkey; Type: CONSTRAINT; Schema: public; Owner: ckan_default; Tablespace: 
---
-
-ALTER TABLE ONLY ckan_download
-    ADD CONSTRAINT ckan_download_pkey PRIMARY KEY (package_name, file_id);
+ALTER TABLE ONLY resource_metadata ALTER COLUMN id SET DEFAULT nextval('resource_metadata_id_seq'::regclass);
 
 
 --
@@ -136,4 +179,7 @@ GRANT ALL ON SCHEMA public TO PUBLIC;
 --
 -- PostgreSQL database dump complete
 --
+--
+
+CREATE TABLE ckan_download (
 
