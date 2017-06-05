@@ -5,6 +5,7 @@ import logging
 import ConfigParser
 import sys
 import urllib
+import os
 
 from ckanapi import RemoteCKAN, NotAuthorized, NotFound, ValidationError, CKANAPIError, ServerIncompatibleError
 
@@ -52,10 +53,14 @@ if __name__ == '__main__':
 	pkgid = pkg['package']
 	rid = pkg['resource']
 	pkg_data = ckandata.package(pkgid)
+	pkg_title = pkg_data['title']
         res_data = ckandata.resource(rid)
 	res_url = res_data['url']
+        pkg_title_path = rootpath+"/"+pkg_title
 	#print "wget %s" % res_url
-        ofilename = rootpath+"/"+rid
+        if not os.path.exists(pkg_title_path):
+            os.makedirs(pkg_title_path)
+        ofilename = pkg_title_path+"/"+rid
         urllib.urlretrieve (res_url, ofilename)
         
 
