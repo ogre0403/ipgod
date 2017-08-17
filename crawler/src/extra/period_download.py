@@ -16,7 +16,7 @@ class Downloader(threading.Thread):
     def __init__(self, item):
         super(Downloader, self).__init__()
         self.item = item
-        schedule.every(30).seconds.do(self.download)
+        schedule.every(600).seconds.do(self.download)
 
     def run(self):
         while True:
