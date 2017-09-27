@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # Author : Ceasar Sun , Power by IPGOD project
-# 20170830: version 1
+# History:
+#    20170927: Add lock file,  use ./lib/shrink_ckan_resource.sh to maintain the resource quantity of dateset 
+#    20170830: version 1
 
 ## S1: 需確認之整體參數
 
@@ -16,13 +18,18 @@ WD="/opt/ipgod_production/data_download/313200000g-000158"
 PACKAGE_ID="313200000g-000158"
 FILENAME_PREFIX="${PACKAGE_ID}-"
 FORMAT_LIST="xml csv json"
+QUALITY=300
 
 ## S2: 下列參數不需更改
 
 LATEST_LOG="latest-${PACKAGE_ID}.log"		#Content: "format:resource_id:md5sum:filename"
 RESOURCE_JSON="/tmp/${PACKAGE_ID}.tmp.json"
+LOCK_FILE=/tmp/push.${PACKAGE_ID}.2ipgod.lock
 
 ### main ###
+
+[ -e $LOCK_FILE ] && echo "Lock !! Try later ...." && exit;
+touch $LOCK_FILE
 
 pushd $WD
 
@@ -49,10 +56,11 @@ for format in $FORMAT_LIST ; do
     fi
 
     echo "'$format':'$resource_id':'${latest_filename}':'${latest_md5sum}/${last_md5sum}'"
-    rm -rf latest-${PACKAGE_ID}.$format ; ln -s $latest_filename latest-${PACKAGE_ID}.$format
+    #rm -rf latest-${PACKAGE_ID}.$format ; ln -s $latest_filename latest-${PACKAGE_ID}.$format
 
     if [ -z "$resource_id" ] ; then
         # New add and be as the latest , use : `${LIB_DIR}/push2ckan.py --api_key key --package package-id --name name --file file`
+        rm -rf latest-${PACKAGE_ID}.$format ; ln -s $latest_filename latest-${PACKAGE_ID}.$format
         ${LIB_DIR}/push2ckan.py --api_key $API_KEY --package $PACKAGE_ID --name $latest_filename --file $latest_filename
         ${LIB_DIR}/push2ckan.py --api_key $API_KEY --package $PACKAGE_ID --name latest-${PACKAGE_ID}.$format --file latest-${PACKAGE_ID}.$format > $RESOURCE_JSON
 
@@ -61,6 +69,8 @@ for format in $FORMAT_LIST ; do
 
     elif [ ! "$latest_md5sum" = "$last_md5sum"  ] ; then
         # Update resource
+        need_to_update_log='y'
+        rm -rf latest-${PACKAGE_ID}.$format ; ln -s $latest_filename latest-${PACKAGE_ID}.$format
         ${LIB_DIR}/push2ckan.py --api_key $API_KEY --package $PACKAGE_ID --name $latest_filename --file $latest_filename
         ${LIB_DIR}/update2ckan.py --api_key $API_KEY --resource $resource_id --name latest-${PACKAGE_ID}.$format --file latest-${PACKAGE_ID}.$format
         need_to_update_log='y'
@@ -75,7 +85,11 @@ for format in $FORMAT_LIST ; do
         ### LATEST_LOG="latest.log"		#Content: "format:resource_id:md5sum:filename"
         echo "${format}:${resource_id}:$latest_md5sum:$latest_filename" >> $LATEST_LOG
     fi
-
 done
+
+# to shrink resource quantity in dataset
+/opt/ipgod_production/od2ckan/lib/shrink_ckan_resource.sh -p $PACKAGE_ID -a $API_KEY -r $SITE -n $QUALITY
+
+rm -f $LOCK_FILE 2>/dev/null
 
 popd;
