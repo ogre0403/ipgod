@@ -41,6 +41,7 @@ class od():
 	        data = datafd.read()
         else:
             logger.warn("json file NOT exist %s" % odfile)
+            return False
 	x=json.loads(data)
         logger.info("load json file successful")
 	rs = self.restruct(x['result'])

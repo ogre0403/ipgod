@@ -50,7 +50,7 @@ class mapod2ckan():
 		self.package['tag'].append(tagdata)
 
     def map_organization_params(self, key, value):
-	if key == 'organization':
+	if key == 'publisher':
 	    org = organization_map.organization_name()
 	    owner_org = org.search(value.encode('utf8'))
 	    if owner_org == None:
@@ -58,7 +58,6 @@ class mapod2ckan():
 		m.update(value.encode('utf-8'))
 		owner_org = m.hexdigest()[:10]
 
-	    print owner_org
 	    self.package['owner_org'] = owner_org
 	    self.package['org']['name'] = owner_org
 	    self.package['org']['title'] = value.encode('utf-8')
@@ -67,7 +66,7 @@ class mapod2ckan():
 	    org_extra['key'] = key.encode('utf-8')
 	    org_extra['value'] = value.encode('utf-8')
 	    self.package['org']['extras'].append(org_extra)
-	
+        #print "org"+key
 
     def map_package_extras(self, key, value):
         if key == 'notes':
@@ -118,29 +117,29 @@ class mapod2ckan():
 		self.map_package_params('notes', v)
 #	    elif k == 'type':
 #		self.map_package_params('type', v)
-	    elif k == 'publisher':
-		self.map_package_params('owner_org', v)
 	    elif k == 'modified':
 		self.map_package_params('last_modified', v)
 	    elif k == 'license':
 		self.map_package_params('license_id', self.license_id)
 	    elif k == 'license_URL':
 		self.map_package_params('license_url', self.license_url)
-	    elif k == 'organization':
+	    elif k == 'publisherOID':
 		self.map_organization_params(k, v)
-	    elif k == 'organizationContactName':
+	    elif k == 'publisherOrgCode':
 		self.map_organization_params(k, v)
-	    elif k == 'organizationContactPhone':
+	    elif k == 'publisherContactEmail':
 		self.map_organization_params(k, v)
-	    elif k == 'organizationContactEmail':
+		self.map_package_params('author_email', v)
+	    elif k == 'publisherContactName':
+		self.map_package_params('author', v)
+		self.map_organization_params(k, v)
+	    elif k == 'publisher':
+		self.map_organization_params(k, v)
+	    elif k == 'publisherContactPhone':
 		self.map_organization_params(k, v)
 	    elif k == 'contactName':
 		self.map_package_params('author', v)
-	    elif k == 'publisherContactName':
-		self.map_package_params('author', v)
 	    elif k == 'contactEmail':
-		self.map_package_params('author_email', v)
-	    elif k == 'publisherContactEmail':
 		self.map_package_params('author_email', v)
 	    elif k == 'landingPage':
 		self.map_organization_params(k, v)

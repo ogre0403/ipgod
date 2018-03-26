@@ -1,12 +1,17 @@
 #!/bin/python
 # -*- coding: utf-8 -*-
+# encoding=utf8  
+import sys  
+reload(sys)  
+sys.setdefaultencoding('utf8')
 import odtw
 import map2ckan
 import os
 import logging
 import ConfigParser
-import sys
 import time
+import hashlib
+from migrate_old_odformat import getRIDfromURL, downloadFile, findOldPackageRes
 
 from ckanapi import RemoteCKAN, NotAuthorized, NotFound, ValidationError, CKANAPIError, ServerIncompatibleError
 
@@ -42,7 +47,12 @@ class import2ckan():
     def check_resource(self, testresid):
 	for res in self.resources:
 	    if res['name'] == testresid:
+                logger.info("resource check: name = resid")
 		return True
+            if testresid in res['url']:
+                logger.info("resource check: resid in url")
+                return True
+            
 	return False
 
     def check_organization(self):
@@ -87,55 +97,92 @@ class import2ckan():
     def add_resource(self):
 
 	rres = {}
+        testpid = self.package['name']
+        oldRes = findOldPackageRes(testpid)
 	for res in self.package['resources']:
-            
-	    time.sleep(4)
+
+            testurl = res.get('extras').get('downloadURL')
+            resourceid = getRIDfromURL(oldRes, testurl)
+            res['resourceid'] = resourceid
+            logger.info("get old rid %s" % resourceid) 
             if res['resourceid'] == '':
-	        logger.info("dangerous resourceid  %s" % (res['resourceid']))
+	        logger.info("dangerous resourceid or new format %s" % (res['resourceid']))
+                xurl = testurl
+		m = hashlib.md5()
+		m.update(xurl.encode('utf-8'))
+		resourceid = m.hexdigest()
+                res['resourceid'] = resourceid
 		rid = res['resourceid']
 		rres[rid] = False
-	        continue
+	        #continue
             if 'file' in res:
                 rfile = res['file']
             else:
 	        rfile = self.package['basepath']+'/'+res['resourceid']+'.'+res['format'].lower()
 
+	    if self.check_resource(res['resourceid'].lower()) == True:
+                logger.info("resource %s exist" % res['resourceid'])
+                continue
+
+	    time.sleep(1)
+
 	    rid = res['resourceid']
 	    rres[rid] = False
             if os.path.isfile(rfile) == True:
-	        logger.info("add resource %s and upload file %s" % (res['resourceid'], rfile))
+	        logger.info("adding resource %s and upload file %s" % (res['resourceid'], rfile))
             else:
 	        logger.info("file %s not exist or some file error" % rfile)
+	        logger.info("file %s not exist, try to download again" % testurl)
+                #local_filename = testurl.split('/')[-1]
+                #rfile = self.package['basepath']+'/'+local_filename
+                downloadFile(testurl, rfile)                
 
 	    if self.check_resource(res['resourceid'].lower()) == True:
                 logger.info("resource %s exist" % res['resourceid'])
 		rres[rid] = True
 	    else:
       
+                if os.path.isfile(rfile) == False:
+                    rfile=''
 	        #print "upload file %s" % rfile
+                ndesc = "資源描述：\n\n"
+                rextras = res['extras']
+                for k, v in rextras.items():
+                    ndesc = ndesc+k.encode('utf-8')+":"+v.encode('utf-8')+"\n\n"
+                #print ndesc
 	        #resc = self.ckan.action.resource_create(
 	        #    package_id=self.package['name'].lower(),
-	        #    url=res['resourceid'].lower(),
-	        #    description=res['resourcedescription'],
+	        #    url=testurl,
+	        #    description=ndesc,
 	        #    format=res['format'].lower(),
-	        #    name=res['resourceid'].lower(),
+	        #    name=res['resourcedescription'],
 	        #    last_modified=res['resourcemodified'],
-	        #    upload=open(rfile, 'rb'),
-	        #)
+	        #    upload=open(rfile, 'rb')
+                #)
                 #print resc
 		#rres[rid] = True
-
 	    	try:
-		    resc = self.ckan.action.resource_create(
-			package_id=self.package['name'].lower(),
-			url=res['resourceid'].lower(),
-			description=res['resourcedescription'],
-			format=res['format'].lower(),
-			name=res['resourceid'].lower(),
-			last_modified=res['resourcemodified'],
-			upload=open(rfile, 'rb'),
-		    )
-                    print resc
+                    if rfile == '':
+		        resc = self.ckan.action.resource_create(
+		            package_id=self.package['name'].lower(),
+		            url=testurl,
+		            description=ndesc,
+		            format=res['format'].lower(),
+		            name=res['resourcedescription'],
+		            last_modified=res['resourcemodified'],
+		        )
+
+                    else:
+		        resc = self.ckan.action.resource_create(
+		            package_id=self.package['name'].lower(),
+		            url=testurl,
+		            description=ndesc,
+		            format=res['format'].lower(),
+		            name=res['resourcedescription'],
+		            last_modified=res['resourcemodified'],
+		            upload=open(rfile, 'rb'),
+		        )
+                    #print resc
 		    logger.info("resource added %s" % res['resourceid'])
 		    rres[rid] = True
 	    	except NotFound:
@@ -191,8 +238,9 @@ class import2ckan():
     def commit(self, data):
 	self.package = data
 	ckan_res = {}
+        #print data
 	if self.check_organization() == False:
-	    logger.info("add organization " + self.package['org']['name'])
+	    logger.info("add organization " + self.package.get('org').get('name'))
 	    self.add_organization()
 	else:
 	    logger.info("update organization " + self.package['org']['name'])
@@ -212,14 +260,15 @@ class import2ckan():
 
 if __name__ == '__main__': 
     #jsonfile = 'testdata/A41000000G-000001/A41000000G-000001.json'
-    jsonfile = '/opt/ipgod_production/data_download/A49000000B-000005/A49000000B-000005.json'
-    if len(sys.argv) > 0:
+    jsonfile = '/opt/ipgod_production/data_download/313000000G-A00123/313000000G-A00123.json'
+    if len(sys.argv) > 1:
         jsonfile = sys.argv[1]
     odtw = odtw.od()
     data = odtw.read(jsonfile)
 
     ckmap = map2ckan.mapod2ckan()
     package = ckmap.map(data)
+    #print package
     od_data_path = os.path.dirname(os.path.realpath(jsonfile))
     package['basepath'] = od_data_path
     put2ckan = import2ckan()
