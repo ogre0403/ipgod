@@ -21,9 +21,11 @@ info = {
     'retirement':'F00' #退休
 }
 
-ua = 'ckanapiexample/1.0 (+http://140.110.141.160)'
+ua = 'ckanapiexample/1.0 (+http://...)'
+url=''
+key=''
 
-ipgodTest = RemoteCKAN('http://140.110.141.160', apikey='3f10789c-9dcc-4db4-af6a-e9d7ac00ad7f')
+ipgodTest = RemoteCKAN(url, apikey=key)
 packages = ipgodTest.action.package_list(id='data-explorer')
 
 for package in packages:
