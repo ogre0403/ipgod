@@ -1,0 +1,368 @@
+{
+    "help": "",
+    "success": true,
+    "result": {
+        "categoryCode": "I00",
+        "identifier": "A09050000E-000002",
+        "title": "全國圖書書目資訊網(NBINet)",
+        "description": "NBINet「圖書聯合目錄」收錄的資料包括國家圖書館及95所各類型合作單位陸續提供之書目及館藏資料、國際標準書號中心新書書目、漢學研究中心藏書目錄。",
+        "fieldDescription": "標準書號(ISBN, ISSN等)、書名、編著者、版本、出版項、面頁數尺寸、集叢名、出版年、NBI紀錄號",
+        "type": "rawData",
+        "license": "政府資料開放授權條款-第1版",
+        "licenseURL": "",
+        "cost": "免費",
+        "costURL": "",
+        "costLaw": "",
+        "organization": "",
+        "organizationContactName": "",
+        "organizationContactPhone": "",
+        "organizationContactEmail": "",
+        "publisher": "國家圖書館",
+        "publisherContactName": "鄭小姐",
+        "publisherContactPhone": "02-23619132#189",
+        "publisherContactEmail": "hcc@ncl.edu.tw",
+        "publisherOID": "2.16.886.101.20003.20005.20014",
+        "publisherOrgCode": "A09050000E",
+        "accrualPeriodicity": "每季",
+        "temporalCoverageFrom": "2015-01-01 00:00:00",
+        "temporalCoverageTo": "2018-03-31 00:00:00",
+        "issued": "2013-12-26 00:00:00",
+        "modified": "2018-10-08 12:48:50",
+        "spatial": "",
+        "language": "中文",
+        "keyword": [
+            "圖書",
+            "書目"
+        ],
+        "numberOfData": "47869",
+        "notes": "授權說明網址: http://data.gov.tw/license",
+        "viewCount": "8437",
+        "downloadCount": "798",
+        "distribution": [
+            {
+                "resourceID": "",
+                "resourceDescription": "NBINet圖書聯合目錄(103年第1季)",
+                "format": "CSV",
+                "resourceModified": "2018-10-08 12:51:04",
+                "downloadURL": "http://nbiqc.ncl.edu.tw/opendata/nbidata_103Q1.csv",
+                "metadataSourceOfData": "",
+                "characterSetCode": "UTF-8",
+                "qcLevel": ""
+            },
+            {
+                "resourceID": "",
+                "resourceDescription": "NBINet圖書聯合目錄(103年第2季)",
+                "format": "CSV",
+                "resourceModified": "2018-10-08 12:51:07",
+                "downloadURL": "http://nbiqc.ncl.edu.tw/opendata/nbidata_103Q2.csv",
+                "metadataSourceOfData": "",
+                "characterSetCode": "UTF-8",
+                "qcLevel": ""
+            },
+            {
+                "resourceID": "",
+                "resourceDescription": "NBINet圖書聯合目錄(103年第3季)",
+                "format": "CSV",
+                "resourceModified": "2018-10-08 12:51:11",
+                "downloadURL": "http://nbiqc.ncl.edu.tw/opendata/nbidata_103Q3.csv",
+                "metadataSourceOfData": "",
+                "characterSetCode": "UTF-8",
+                "qcLevel": ""
+            },
+            {
+                "resourceID": "",
+                "resourceDescription": "NBINet圖書聯合目錄(103年第4季)",
+                "format": "CSV",
+                "resourceModified": "2018-10-08 12:51:13",
+                "downloadURL": "http://nbiqc.ncl.edu.tw/opendata/nbidata_103Q4.csv",
+                "metadataSourceOfData": "",
+                "characterSetCode": "UTF-8",
+                "qcLevel": ""
+            },
+            {
+                "resourceID": "",
+                "resourceDescription": "NBINet圖書聯合目錄(104年第1季)",
+                "format": "CSV",
+                "resourceModified": "2018-10-08 12:51:18",
+                "downloadURL": "http://nbiqc.ncl.edu.tw/opendata/nbidata_104Q1.csv",
+                "metadataSourceOfData": "",
+                "characterSetCode": "UTF-8",
+                "qcLevel": ""
+            },
+            {
+                "resourceID": "",
+                "resourceDescription": "NBINet圖書聯合目錄(104年第2季)",
+                "format": "CSV",
+                "resourceModified": "2018-10-08 12:51:22",
+                "downloadURL": "http://nbiqc.ncl.edu.tw/opendata/nbidata_104Q2.csv",
+                "metadataSourceOfData": "",
+                "characterSetCode": "UTF-8",
+                "qcLevel": ""
+            },
+            {
+                "resourceID": "",
+                "resourceDescription": "NBINet圖書聯合目錄(104年第3季)",
+                "format": "CSV",
+                "resourceModified": "2018-10-08 12:51:25",
+                "downloadURL": "http://nbiqc.ncl.edu.tw/opendata/nbidata_104Q3.csv",
+                "metadataSourceOfData": "",
+                "characterSetCode": "UTF-8",
+                "qcLevel": ""
+            },
+            {
+                "resourceID": "",
+                "resourceDescription": "NBINet圖書聯合目錄(104年第4季)",
+                "format": "CSV",
+                "resourceModified": "2018-10-08 12:51:29",
+                "downloadURL": "http://nbiqc.ncl.edu.tw/opendata/nbidata_104Q4.csv",
+                "metadataSourceOfData": "",
+                "characterSetCode": "UTF-8",
+                "qcLevel": ""
+            },
+            {
+                "resourceID": "",
+                "resourceDescription": "NBINet圖書聯合目錄(105年第1季)",
+                "format": "CSV",
+                "resourceModified": "2018-10-08 12:51:33",
+                "downloadURL": "http://nbiqc.ncl.edu.tw/opendata/nbidata_105Q1.csv",
+                "metadataSourceOfData": "",
+                "characterSetCode": "UTF-8",
+                "qcLevel": ""
+            },
+            {
+                "resourceID": "",
+                "resourceDescription": "NBINet圖書聯合目錄(105年第2季)",
+                "format": "CSV",
+                "resourceModified": "2018-10-08 12:51:37",
+                "downloadURL": "http://nbiqc.ncl.edu.tw/opendata/nbidata_105Q2.csv",
+                "metadataSourceOfData": "",
+                "characterSetCode": "UTF-8",
+                "qcLevel": ""
+            },
+            {
+                "resourceID": "",
+                "resourceDescription": "NBINet圖書聯合目錄(105年第3季)",
+                "format": "CSV",
+                "resourceModified": "2018-10-08 12:51:41",
+                "downloadURL": "http://nbiqc.ncl.edu.tw/opendata/nbidata_105Q3.csv",
+                "metadataSourceOfData": "",
+                "characterSetCode": "UTF-8",
+                "qcLevel": ""
+            },
+            {
+                "resourceID": "",
+                "resourceDescription": "NBINet圖書聯合目錄(105年第4季)",
+                "format": "CSV",
+                "resourceModified": "2018-10-08 12:51:42",
+                "downloadURL": "http://nbiqc.ncl.edu.tw/opendata/nbidata_105Q4.csv",
+                "metadataSourceOfData": "",
+                "characterSetCode": "UTF-8",
+                "qcLevel": ""
+            },
+            {
+                "resourceID": "",
+                "resourceDescription": "NBINet圖書聯合目錄(106年第1季)",
+                "format": "CSV",
+                "resourceModified": "2018-10-08 12:51:48",
+                "downloadURL": "http://nbiqc.ncl.edu.tw/opendata/nbidata_106Q1.csv",
+                "metadataSourceOfData": "",
+                "characterSetCode": "UTF-8",
+                "qcLevel": ""
+            },
+            {
+                "resourceID": "",
+                "resourceDescription": "NBINet圖書聯合目錄(106年第2季)",
+                "format": "CSV",
+                "resourceModified": "2018-10-08 12:51:50",
+                "downloadURL": "http://nbiqc.ncl.edu.tw/opendata/nbidata_106Q2.csv",
+                "metadataSourceOfData": "",
+                "characterSetCode": "UTF-8",
+                "qcLevel": ""
+            },
+            {
+                "resourceID": "",
+                "resourceDescription": "NBINet圖書聯合目錄(106年第3季)",
+                "format": "CSV",
+                "resourceModified": "2018-10-08 12:51:54",
+                "downloadURL": "http://nbiqc.ncl.edu.tw/opendata/nbidata_106Q3.csv",
+                "metadataSourceOfData": "",
+                "characterSetCode": "UTF-8",
+                "qcLevel": ""
+            },
+            {
+                "resourceID": "",
+                "resourceDescription": "NBINet圖書聯合目錄(106年第4季)",
+                "format": "CSV",
+                "resourceModified": "2018-10-08 12:52:05",
+                "downloadURL": "http://nbiqc.ncl.edu.tw/opendata/nbidata_106Q4.csv",
+                "metadataSourceOfData": "",
+                "characterSetCode": "UTF-8",
+                "qcLevel": ""
+            },
+            {
+                "resourceID": "",
+                "resourceDescription": "NBINet圖書聯合目錄(107年第1季)",
+                "format": "CSV",
+                "resourceModified": "2018-10-08 12:52:09",
+                "downloadURL": "http://nbiqc.ncl.edu.tw/opendata/nbidata_107Q1.csv",
+                "metadataSourceOfData": "",
+                "characterSetCode": "UTF-8",
+                "qcLevel": ""
+            },
+            {
+                "resourceID": "",
+                "resourceDescription": "NBINet圖書聯合目錄(107年第2季)",
+                "format": "CSV",
+                "resourceModified": "2018-10-08 12:52:14",
+                "downloadURL": "http://nbiqc.ncl.edu.tw/opendata/nbidata_107Q2.csv",
+                "metadataSourceOfData": "",
+                "characterSetCode": "UTF-8",
+                "qcLevel": ""
+            },
+            {
+                "resourceID": "",
+                "resourceDescription": "NBINet圖書聯合目錄(107年第3季)",
+                "format": "CSV",
+                "resourceModified": "2018-10-08 12:52:18",
+                "downloadURL": "http://nbiqc.ncl.edu.tw/opendata/nbidata_107Q3.csv",
+                "metadataSourceOfData": "",
+                "characterSetCode": "",
+                "qcLevel": ""
+            }
+        ],
+        "Comments": [
+            {
+                "commentAuthor": "Daniel",
+                "commentType": "",
+                "commentSubject": "Re: ISBN欄位格式錯誤問題",
+                "comments": "敬啟者：\r\n\r\n謝謝您的快速回覆，\r\n經檢視後，發現無論以何種檔案格式開啟仍有以下問題：\r\n\r\n(1)修正後ISBN號碼僅由科學記號轉換為0(如下圖)\r\nhttps://imgur.com/UMSEen7\r\n\r\n(2)另也發現部分資料欄位對應錯誤(如下圖)\r\nhttps://imgur.com/9fxCBu2\r\n\r\n另外請問回溯檔案是否有預計時程，\r\n謝謝您",
+                "commentId": "541044",
+                "commentReplyId": "0",
+                "commentHost": "",
+                "commentTime": "2018-04-23 10:06:43",
+                "commentEmail": ""
+            },
+            {
+                "commentAuthor": "yawen0509",
+                "commentType": "",
+                "commentSubject": "Re：ISBN格式及部分資料欄位對應錯誤問題",
+                "comments": "親愛的使用者：您好！\r\n謝謝您的指正及提供之建議，有關您提問的問題回覆如下：\r\n問題1：修正後ISBN號碼僅由科學記號轉換為0\r\n回覆：已全部修正，重新上傳。\r\n問題2：發現部分資料欄位對應錯誤\r\n回覆：因各合作館編目採用的機讀格式不盡相同，有CMARC及MARC21，此外，有的合作館係以RDA編目，部分欄位亦不相同，以致整併資料時，發生欄位錯置；對此，將盡可能陸續修正上傳。\r\n\r\n若您有任何疑問，歡迎來電或寫信與我們聯繫。",
+                "commentId": "541089",
+                "commentReplyId": "541044",
+                "commentHost": "",
+                "commentTime": "2018-04-25 17:51:19",
+                "commentEmail": ""
+            },
+            {
+                "commentAuthor": "",
+                "commentType": "",
+                "commentSubject": "Re:Re：ISBN格式及部分資料欄位對應錯誤問題",
+                "comments": "敬啟者\r\n\r\n 感謝您迅速修正並回覆，\r\n 謝謝您",
+                "commentId": "541166",
+                "commentReplyId": "541089",
+                "commentHost": "",
+                "commentTime": "2018-04-30 09:19:32",
+                "commentEmail": ""
+            },
+            {
+                "commentAuthor": "Daniel",
+                "commentType": "",
+                "commentSubject": "ISBN欄位格式錯誤問題",
+                "comments": "敬啟者：\r\n\r\n請問以下問題：\r\n\r\n(1) ISBN號碼以科學符號表示：\r\n      各季、各檔案格式(excel、json皆然)之ISBN欄位大部分皆以科學記號表示，\r\n      以107年第一季為例，103,401筆資料，有62,155筆為科學記號，\r\n      詳見下連結：https://imgur.com/a/OpCpJ\r\n      其餘各季也有相同問題，\r\n      推測資料在轉出各檔案格式之前，是以數字格式儲存ISBN號碼。\r\n\r\n(2) 根據本頁面所提供訊息，上架日期為102年12月26日，\r\n      而目前可以下載的僅有106年第2季至107年第1季，共4季。\r\n\r\n綜上所述，\r\n是否可提供自102年12月26日起至今，\r\n各季及ISBN欄位補正後之書目資料？\r\n\r\n謝謝您\r\n",
+                "commentId": "540942",
+                "commentReplyId": "0",
+                "commentHost": "",
+                "commentTime": "2018-04-16 20:16:45",
+                "commentEmail": ""
+            },
+            {
+                "commentAuthor": "yawen0509",
+                "commentType": "",
+                "commentSubject": "Re：回覆：ISBN欄位格式錯誤問題",
+                "comments": "親愛的使用者：您好！\r\n\r\n謝謝您的指正及提供之建議，我們已修正106年第2季至107年第1季檔案，ISBN號碼已為正確，自上架日起之檔案，將陸續回溯更新上傳。\r\n若您有任何疑問，歡迎來電或寫信與我們聯繫。\r\n",
+                "commentId": "540961",
+                "commentReplyId": "540942",
+                "commentHost": "",
+                "commentTime": "2018-04-17 20:36:01",
+                "commentEmail": ""
+            },
+            {
+                "commentAuthor": "",
+                "commentType": "",
+                "commentSubject": "Re:Re：回覆：ISBN欄位格式錯誤問題",
+                "comments": "敬啟者\r\n\r\n謝謝您的快速回覆，\r\n但我仍發現一些問題需要請教，\r\n礙於字數限制，\r\n將再資料集下方另起新回應\r\n謝謝您",
+                "commentId": "541045",
+                "commentReplyId": "540961",
+                "commentHost": "",
+                "commentTime": "2018-04-23 10:09:41",
+                "commentEmail": ""
+            },
+            {
+                "commentAuthor": "杜杰",
+                "commentType": "",
+                "commentSubject": "檔案編碼方式及書名欄位問題",
+                "comments": "請問檔案可否使用utf8的編碼不要用big5\r\n另外很多書名後面都會有\"\\\" \".\" \":\"等符號可以移除嗎？這會造成使用上的麻煩\r\n另外ISBN欄位後會附註\"平裝\"等字，是否應該將其寫到備註，讓該欄位保持乾淨的ISBN內容",
+                "commentId": "9448",
+                "commentReplyId": "0",
+                "commentHost": "",
+                "commentTime": "2016-10-06 15:54:00",
+                "commentEmail": ""
+            },
+            {
+                "commentAuthor": "root",
+                "commentType": "",
+                "commentSubject": "RE:檔案編碼方式及書名欄位問題",
+                "comments": "敬愛的NBINet使用者杜杰：您好!\r\n\r\n感謝您對本館全國圖書書目資訊網(NBINet)提出的兩個寶貴意見，\r\n本館書目資訊中心的回覆如下：\r\n\r\n1. Utf-8為國際編碼，可同時顯示多國言語文字，如繁體中文、\r\n簡體中文、日文、韓文…等，而Big5係台灣及香港二地專\r\n用的繁體中文編碼方式，只能顯示繁體中文，無法顯示多國字，\r\n基於此，本館選擇採用目前通用的國際編碼Utf-8。\r\n\r\n2. 書名後面的斜線 \"\\\" 乃圖書館圖書目錄的一部分，是圖書編目時\r\n必須著錄的符號，我們將設法尋找改善方式，以利於您的使用。再次\r\n感謝您的建言。耑此\r\n\r\n敬請大安",
+                "commentId": "9482",
+                "commentReplyId": "9448",
+                "commentHost": "",
+                "commentTime": "2016-10-11 11:20:03",
+                "commentEmail": ""
+            },
+            {
+                "commentAuthor": "LIN CHE JU",
+                "commentType": "",
+                "commentSubject": "資料集問題",
+                "comments": "您好我下載此資料集，有些資料很奇怪\r\n1.出版年份很多值都很奇怪有9999 199u 2015u?\r\n2.ISBN很多是無效的 像是:9789860000000, 有很多本書籍的ISBN都是這個\r\n3.ISBN格式可否一致呢? 現在格式有 \"978-986-3181-46-0(有\"-\"符號)\" 跟9789861476087(沒有\"-\"符號)\r\n4.ISBN是否可以統一提供13碼呢\r\n\r\n謝謝您~",
+                "commentId": "6132",
+                "commentReplyId": "0",
+                "commentHost": "",
+                "commentTime": "2016-03-23 22:17:59",
+                "commentEmail": ""
+            },
+            {
+                "commentAuthor": "chein1",
+                "commentType": "",
+                "commentSubject": "RE:資料集問題",
+                "comments": "敬啟者：\r\n\r\n您好。\r\n\r\n針對您的問題，說明如下：\r\n\r\n1. 出版年的值若是9999，是指還在發行的期刊或尚未全數出版的套書； u是因為年份未知或不確定。\r\n\r\n2&3. 已修正ISBN數字形式錯誤問題，也將ISBN中的「-」全部移除，並重新上傳批次檔案。\r\n\r\n4. 由於書目裡的ISBN是依據書上印的資訊照錄，2007年才開始採用13碼ISBN，2007年之前的書本都使用10碼ISBN，所以書目資料也因前後出版年代不同，會有10碼及13碼ISBN。\r\n\r\n希望以上回答能解決您的疑問。\r\n\r\n\r\n謝謝。\r\n\r\n",
+                "commentId": "6153",
+                "commentReplyId": "6132",
+                "commentHost": "",
+                "commentTime": "2016-03-25 08:34:41",
+                "commentEmail": ""
+            },
+            {
+                "commentAuthor": "陳穎青",
+                "commentType": "",
+                "commentSubject": "這個資料集ISBN欄位的問題",
+                "comments": "敬啟者，我下載了這個資料集，用Excel開啟以後發現ISBN欄位有很多空值，或無效值，例如「9789570000000」這樣的號碼，我想請教一下：\r\n\r\n一、這個資料集的來源和性質是什麼呢？\r\n二、ISBN欄位可以覆核過重新發布嘛？\r\n\r\n感謝。",
+                "commentId": "1401",
+                "commentReplyId": "0",
+                "commentHost": "",
+                "commentTime": "2014-07-09 09:23:50",
+                "commentEmail": ""
+            },
+            {
+                "commentAuthor": "chein1",
+                "commentType": "",
+                "commentSubject": "RE:這個資料集ISBN欄位的問題",
+                "comments": "針對您發現的問題，說明如下：\r\n\r\n一、資料來源和性質\r\n此資料集為「全國圖書書目資訊網（NBINet）」聯合目錄前一季蒐集的書目資料，聯合目錄資料來自NBINet的80餘所合作館提供的各館館藏目錄。\r\n\r\n二、ISBN錯誤及從缺問題\r\n（一）我們已修正並重新上傳本季資料集，日後也設法研議檢核ISBN正確度方法。\r\n（二）ISBN從缺的原因大致可歸納幾種原因：\r\n1、部分出版社未申請ISBN\r\n2、部分論文集、研究報告等灰色文獻因未公開出版，所以未申請ISBN\r\n3、紙本圖書或電子書之外的多媒體資料，不適用ISBN申請\r\n\r\n謝謝您提問。\r\n",
+                "commentId": "1643",
+                "commentReplyId": "1401",
+                "commentHost": "",
+                "commentTime": "2014-09-10 14:27:47",
+                "commentEmail": ""
+            }
+        ]
+    }
+}

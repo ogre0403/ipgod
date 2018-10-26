@@ -1,0 +1,75 @@
+{
+   "help":"",
+   "result":{
+      "categoryCode":"800",
+      "identifier":"A17030000J-000020",
+      "title":"新制勞工退休基金社會責任投資（SRI）比例",
+      "description":"統計新制勞工退休基金投資於社會責任相關評選優良企業金額占國內股票部位比例",
+      "fieldDescription":"日期、新制勞工退休基金社會責任投資（SRI）比例",
+      "type":"SERVICES",
+      "license":"政府資料開放授權條款-第1版",
+      "licenseURL":"",
+      "cost":"免費",
+      "costURL":"",
+      "costLaw":"",
+      "organization":"",
+      "organizationContactName":"",
+      "organizationContactPhone":"",
+      "organizationContactEmail":"",
+      "publisher":"勞動部勞動基金運用局",
+      "publisherContactName":"楊明德 先生",
+      "publisherContactPhone":"02-33435985",
+      "publisherContactEmail":"yang_md@blf.gov.tw",
+      "publisherOID":"2.16.886.101.20003.20063.20003",
+      "publisherOrgCode":"A17030000J",
+      "accrualPeriodicity":"每月",
+      "temporalCoverageFrom":"",
+      "temporalCoverageTo":"",
+      "issued":"2015-03-20 08:00:00",
+      "modified":"2018-09-27 10:30:11",
+      "spatial":"",
+      "language":"中文",
+      "keyword":[
+         "SRI,新制勞工退休基金,社會責任投資"
+      ],
+      "numberOfData":"0",
+      "notes":"勞動部OAS標準之API說明文件：https://apiservice.mol.gov.tw/OdService/doc/v2。 Swagger 產生API說明頁面網址：https://petstore.swagger.io/",
+      "viewCount":"1526",
+      "downloadCount":"174",
+      "distribution":[
+         {
+            "resourceID":"",
+            "resourceDescription":"社會責任投資_新制勞工退休基金",
+            "format":"CSV",
+            "resourceModified":"2018-09-27 10:30:11",
+            "downloadURL":"https://apiservice.mol.gov.tw/OdService/download/A17030000J-000020-MAt",
+            "metadataSourceOfData":"",
+            "characterSetCode":"UTF-8",
+            "qcLevel":""
+         },
+         {
+            "resourceID":"",
+            "resourceDescription":"社會責任投資_新制勞工退休基金",
+            "format":"JSON",
+            "resourceModified":"2018-09-27 10:30:11",
+            "downloadURL":"https://apiservice.mol.gov.tw/OdService/download/A17030000J-000020-ejJ",
+            "metadataSourceOfData":"",
+            "characterSetCode":"UTF-8",
+            "qcLevel":""
+         },
+         {
+            "resourceID":"",
+            "resourceDescription":"社會責任投資_新制勞工退休基金",
+            "format":"WEBSERVICES",
+            "resourceModified":"2018-09-27 10:30:11",
+            "downloadURL":"https://apiservice.mol.gov.tw/OdService/rest/datastore/A17030000J-000020-8xn",
+            "metadataSourceOfData":"",
+            "characterSetCode":"UTF-8",
+            "qcLevel":""
+         }
+      ],
+      "Comments":[
+
+      ]
+   }
+}
