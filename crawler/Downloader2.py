@@ -35,9 +35,14 @@ class Downloader(threading.Thread):
 
             for res_item in resource_list:
                 try:
-                    success += 1
-                    res_item.download(success)
-                    logger.info("download success:" + str(res_item.resourceID))
+
+                    if res_item.download(success):
+                        success += 1
+                        logger.info("download success:" + str(res_item.resourceID))
+                    else:
+                        failed += 1
+                        failed_list.append(res_item.resourceID)
+                        logger.info("download failed:" + str(res_item.resourceID))
                 except Exception as e:
                     failed += 1
                     failed_list.append(res_item.resourceID)

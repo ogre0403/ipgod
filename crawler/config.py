@@ -1,5 +1,5 @@
 # control launch crawler.fatchList() or not
-FetchHistory = True
+FetchHistory = False
 
 # if crawler.fatchList() = True, fetch dataset from History_Time to now
 History_Time = "2018-10-18 11:30:00"
@@ -17,10 +17,13 @@ DOWNLOAD_PATH = './data'
 LIST_PATH = './list/dataid_list.json'
 
 # the number of downloader threads
-downloader_num = 6
+downloader_num = 1
 
 # log config file to setup python logging
 logging_configure_file = "logging.ini"
+
+# set request timeout limit ( not download time)
+request_timeout = 120
 
 ## deprecated,  Database and table name
 # DB_DATABASE = "ipgod"

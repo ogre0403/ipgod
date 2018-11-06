@@ -22,7 +22,7 @@ class DatasetMeta(object):
         if x['result']['identifier'] and x['result']['distribution'] :
             datasetid = x['result']['identifier']
             for i in x['result']['distribution']:
-                if i['format'] and i['downloadURL']:
+                if 'format' in i and 'downloadURL' in i:
                     format = i['format']
                     dURL = i['downloadURL']
                     md5 = hashlib.md5()
@@ -90,7 +90,7 @@ class DatasetMeta(object):
         """
         logger.info("Get Resource ID of dataid = " + dataid)
         ## get dataset metadata from server
-        r = requests.get(config.METADATA_URL_PREFIX + dataid)
+        r = requests.get(config.METADATA_URL_PREFIX + dataid,  timeout=config.request_timeout )
         try:
             json_raw = json.loads(r.text)
             if json_raw.get("success") == False:

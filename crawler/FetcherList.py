@@ -11,7 +11,7 @@ class FetcherList():
     dataid = None
     def processHistory(self):
         latestTime = config.History_Time
-        r = requests.get(config.MODIFIED_URL_PREFIX + latestTime)
+        r = requests.get(config.MODIFIED_URL_PREFIX + latestTime,  timeout=config.request_timeout )
         x = json.loads(r.text)
         dataid = x['result']
 

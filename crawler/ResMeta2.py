@@ -90,12 +90,14 @@ class ResourceMeta(object):
             else:
                 fileTypeFromURL = "NA"
 
-        response = requests.get(URL, stream=True, verify=False)
+        response = requests.get(URL, timeout=config.request_timeout , stream=True, verify=False)
         logger.info("download:" + URL)
         try:
             with open(file_name, 'wb') as f:
                 for chunk in response.iter_content(chunk_size=1024):
                     if chunk:  # filter out keep-alive new chunks
                         f.write(chunk)
+            return True
         except:
             logger.error("ERROR:" + URL)
+            return False
