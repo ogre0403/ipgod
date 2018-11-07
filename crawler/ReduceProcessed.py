@@ -1,6 +1,9 @@
 import os
 import json
-
+import json
+import logging
+import requests
+import config
 
 def count_file(root):
     for dirname in os.listdir(root):
@@ -10,13 +13,6 @@ def count_file(root):
         for _ in os.listdir(dirpath):
             filecount += 1
         dict[dirpath] = filecount
-        if filecount in icount:
-            icount[filecount] += 1
-        else :
-            icount[filecount] = 1
-
-    print(dict)
-    print(icount)
 
 
 def findExclusiveOr(src1, src2):
@@ -48,15 +44,25 @@ def store2json(non_process_dataset, json_file):
     with open(json_file, 'w') as outfile:
         json.dump(non_process_dataset, outfile)
 
+def queryByRequest(http_str):
+
+    r = requests.get(http_str, timeout=config.request_timeout)
+    dataset_id = json.loads(r.text)['result']
+    return dataset_id
+
 
 if __name__ == "__main__" :
     #    calculate non process dataset
-    json_path = "./list/dataid_list.json"
+    json_path = "./list/dataid_list_2017.json"
     datasets_dir = "./data"
-    src1 = jsonReadDataset(json_path)
-    src2 = listFromDir(datasets_dir)
+    ## case 1 : compare dataid_list.json to dir existed
+    # src1 = jsonReadDataset(json_path)
+    # src2 = listFromDir(datasets_dir)
+    ## case 2 : compare online dataset to dataid_list
+    src1 = queryByRequest("https://data.gov.tw/api/v1/rest/dataset") #https://data.gov.tw/api/v1/rest/dataset
+    src2 = jsonReadDataset(json_path)
     non_process_dataset = findExclusiveOr(src1,src2)
-    store2json(non_process_dataset,json_path)
+    #store2json(non_process_dataset,json_path)
     print("[Report] alldataset ={}, existed ={}, remain= {}".
           format(len(src1),len(src2),len(non_process_dataset)))
     

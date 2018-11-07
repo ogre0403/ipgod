@@ -1,7 +1,5 @@
-
 import os
-
-
+from collections import OrderedDict
 
 def count_file(root):
     for dirname in os.listdir(root):
@@ -16,29 +14,19 @@ def count_file(root):
         else :
             icount[filecount] = 1
 
+    if 0 in icount :
+        print( "[{}: {}]".format(0,icount.pop(0)))
+    if 1 in icount :
+        print( "[{}: {}]".format(1,icount.pop(1)))
 
-#    print(dict)
-    print(icount)
+
+    sort_dict = OrderedDict(sorted(icount.items()))
+    print(sort_dict)
+
     print(len(dict))
-#    for key in sorted(icount.items()):
-#        print("{}s= {}, ".format(key, icount[key]))
-
-
 
 if __name__ == "__main__" :
     icount = {}
     dict = {}
     root = "./data/"
     count_file(root)
-
-
-
-
-#if __name__ == "__main__":
-#	for root, dirs, files in os.walk("./data_download/"):
-#		for name in dirs :
-#			dirname = os.path.join(root,name)
-#			file_count = 0
-#			for sroot,sdir,sfiles in os.walk(dirname):
-#				file_count = len(sfiles)
-#			print("{} = {}".format(dirname, file_count))	
