@@ -25,6 +25,13 @@ logging_configure_file = "logging.ini"
 # set request timeout limit ( not download time)
 request_timeout = 120
 
+
+## [od2ckan]
+ckanurl="http://ipgod.nchc.org.tw"
+ckan_key="02285f49-a9a7-4809-a42c-a568547511ec"
+root_path="./data"
+#root_path="/home/thomas/data_download/"
+
 ## deprecated,  Database and table name
 # DB_DATABASE = "ipgod"
 # DB_TABLE = "ckan_download"
