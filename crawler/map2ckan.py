@@ -10,6 +10,7 @@ class mapod2ckan():
         self.package = {'groups': [], 'extras': [], 'tag': [], 'resources': [], 'org': {'extras': []}}
         self.license_id = '1'
         self.license_url = 'http'
+        self.org = organization_map.organization_name()
 
     def map_package_params(self, key, value):
         self.package[key] = value
@@ -79,14 +80,14 @@ class mapod2ckan():
 
     def map_organization_params(self, key, value):
         if key == 'publisher':
-            org = organization_map.organization_name()
-            # owner_org = org.search(value.encode('utf8'))
-            owner_org = org.search(value)
-            if owner_org == None:
-                m = hashlib.md5()
-                # m.update(value.encode('utf-8'))
-                m.update(value)
-                owner_org = m.hexdigest()[:10]
+            # find organization name, if not, assign dataset id as its english name
+            # org = organization_map.organization_name()
+            owner_org = self.org.search(value)
+            if owner_org is None :
+                # m = hashlib.md5()
+                # m.update(value)
+                # owner_org = m.hexdigest()[:10]
+                owner_org = str(self.package['name']).lower()
 
             self.package['owner_org'] = owner_org
             self.package['org']['name'] = owner_org

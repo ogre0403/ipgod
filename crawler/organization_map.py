@@ -1,6 +1,5 @@
 #!/bin/python
 # -*- coding: utf-8 -*-
-import unicodecsv
 import csv
 import logging
 import os.path
@@ -15,34 +14,62 @@ logger = logging.getLogger('root')
 class organization_name():
     def __init__(self):
         self.mapfile = "agencies_name_utf8.csv"
+        self.org_dict = self.create_org_dict()
+
+    def create_org_dict(self):
+        odict = {}
+        with open(self.mapfile, 'r', encoding='utf-8') as govfile:
+            # spamreader = unicodecsv.reader(govfile, encoding='utf-8')
+            spamreader = csv.reader(govfile, delimiter=',')
+            for row in spamreader:
+                # org_data = row[1].encode('utf8')
+                org_data = row[1]
+                en = row[2].lower()
+                en = en.replace(" ", "_")
+                en = en.replace(".", "_")
+                en = en.replace(",", "")
+                en = en.replace(")", "")
+                en = en.replace("(", " ")
+                en = en.replace("  ", " ")
+                en = en.replace(" ", "_")
+                en = en.replace("__", "_")
+                odict[org_data] = en
+            return odict
 
     def search(self, keyword):
-        if os.path.isfile(self.mapfile) == True:
-            with open(self.mapfile, 'r', encoding='utf-8') as govfile:
-                # spamreader = unicodecsv.reader(govfile, encoding='utf-8')
-                spamreader = csv.reader(govfile, delimiter=',')
-                for row in spamreader:
-                    # org_data = row[1].encode('utf8')
-                    org_data = row[1]
-                    if org_data == keyword:
-                        logger.info("organization map successfully")
-                        en = row[2].lower()
-                        en = en.replace(" ", "_")
-                        en = en.replace(".", "_")
-                        en = en.replace(",", "")
-                        en = en.replace(")", "")
-                        en = en.replace("(", " ")
-                        en = en.replace("  ", " ")
-                        en = en.replace(" ", "_")
-                        en = en.replace("__", "_")
-                        govfile.close()
-                        return en
-        else:
-            logger.warn("agencies_name NOT exist")
-        logger.info("organization map(%s) fail" % keyword)
+        if os.path.isfile(self.mapfile) == False:
+            logger.info("organization map(%s) fail" % keyword)
+            if os.path.isdir(self.mapfile) is False:
+                raise FileNotFoundError
+
+        if keyword in self.org_dict:
+            return self.org_dict[keyword]
+        else :
+            False
+        # with open(self.mapfile, 'r', encoding='utf-8') as govfile:
+        #     # spamreader = unicodecsv.reader(govfile, encoding='utf-8')
+        #     spamreader = csv.reader(govfile, delimiter=',')
+        #     for row in spamreader:
+        #         # org_data = row[1].encode('utf8')
+        #         org_data = row[1]
+        #         if org_data == keyword:
+        #             logger.info("organization map successfully")
+        #             en = row[2].lower()
+        #             en = en.replace(" ", "_")
+        #             en = en.replace(".", "_")
+        #             en = en.replace(",", "")
+        #             en = en.replace(")", "")
+        #             en = en.replace("(", " ")
+        #             en = en.replace("  ", " ")
+        #             en = en.replace(" ", "_")
+        #             en = en.replace("__", "_")
+        #             return en
+        # return False
+
+
 
 
 if __name__ == '__main__':
     org = organization_name()
-    print
-    org.search("國家發展委員會")
+    print("return: {}".format(org.search("內政部營建署")))
+    print("return: {}".format(org.search("國家發展委員會")))

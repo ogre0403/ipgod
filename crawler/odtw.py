@@ -1,7 +1,7 @@
 #!/bin/python
 # -*- coding: utf-8 -*-
-import json
 import io
+import json
 import logging
 import os.path
 import sys
@@ -76,5 +76,4 @@ if __name__ == '__main__':
     odtw = od()
     odtw.display(jsonfile)
     data = odtw.read(jsonfile)
-    print
-    data
+

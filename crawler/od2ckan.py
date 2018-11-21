@@ -1,7 +1,6 @@
 #!/bin/python
 # -*- coding: utf-8 -*-
 # encoding=utf8  
-import hashlib
 import logging
 import os
 import sys
@@ -202,18 +201,20 @@ class import2ckan():
     def add_organization(self):
 
         self.ckan.action.organization_create(
+        # self.ckan.action.create.organization_create(
             name=self.package['owner_org'],
             title=self.package['org']['title'],
             extras=self.package['org']['extras'],
             users=[{"name": "admin"}]
         )
-        return
+
 
     def add_tag(self):
         return
 
     def update_organization(self):
         self.ckan.action.organization_update(
+        # self.ckan.action.update.organization_update(
             id=self.package['owner_org'],
             name=self.package['owner_org'],
             title=self.package['org']['title'],
@@ -249,7 +250,7 @@ class import2ckan():
         ckan_res = {}
         # print data
         if self.check_organization() == False:
-            logger.info("add organization " + self.package.get('org').get('name'))
+            logger.info("add organization " + self.package['org']['title'])
             self.add_organization()
         else:
             logger.info("update organization " + self.package['org']['name'])
@@ -267,9 +268,8 @@ class import2ckan():
         ckan_res = {'package': pres, 'resources': rres}
         return ckan_res
 
-
 if __name__ == '__main__':
-    jsonfile = './data/395000000A-000115/395000000A-000115.json'
+    jsonfile = './data/301210000T-000312/301210000T-000312.json'
     # jsonfile = '/opt/ipgod_production/data_download/313000000G-A00123/313000000G-A00123.json'
     if len(sys.argv) > 1:
         jsonfile = sys.argv[1]
