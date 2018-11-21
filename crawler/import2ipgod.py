@@ -72,7 +72,7 @@ def commitCkan(dsp, odtw):
     ckmap = map2ckan.mapod2ckan()
     package = ckmap.map(data)
     # print package
-    od_data_path = os.path.dirname(os.path.realpath(dataset))
+    od_data_path = os.path.dirname(os.path.realpath(dataset_full_path))
     package['basepath'] = od_data_path
     put2ckan = od2ckan.import2ckan()
     res = put2ckan.commit(package)

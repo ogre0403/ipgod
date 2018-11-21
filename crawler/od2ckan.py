@@ -137,7 +137,7 @@ class import2ckan():
             if os.path.isfile(rfile) == True:
                 logger.info("adding resource %s and upload file %s" % (res['resourceid'], rfile))
             else:
-                logger.info("file %s not exist or some file error" % rfile)
+                # logger.info("file %s not exist or some file error" % rfile)
                 logger.info("file %s not exist, try to download again" % testurl)
                 # local_filename = testurl.split('/')[-1]
                 # rfile = self.package['basepath']+'/'+local_filename
@@ -269,10 +269,10 @@ class import2ckan():
         return ckan_res
 
 if __name__ == '__main__':
-    jsonfile = './data/301210000T-000312/301210000T-000312.json'
+    jsonfile = './data/A57000000A-000122/A57000000A-000122.json'
     # jsonfile = '/opt/ipgod_production/data_download/313000000G-A00123/313000000G-A00123.json'
-    if len(sys.argv) > 1:
-        jsonfile = sys.argv[1]
+    # if len(sys.argv) > 1:
+    #     jsonfile = sys.argv[1]
     odtw = odtw.od()
     data = odtw.read(jsonfile)
 
