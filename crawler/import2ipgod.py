@@ -25,8 +25,10 @@ def showCaculate(dict_by_count):
         print("[{}: {}]".format(1, dict_by_count.pop(1)))
 
     # show the other case
-    sort_dict = OrderedDict(sorted(dict_by_count.items()))
-    print(sort_dict)
+    sort_list = list(OrderedDict(sorted(dict_by_count.items())).items())
+    sum_list = sum(dict_by_count.values())
+    print("[Start] dataset summary :total {} \n (res,count)= {}".format(sum_list,sort_list))
+    logger.info("[Start] dataset summary :total {} \n (res,count)= {}".format(sum_list,sort_list))
     # print(len(dict))
 
 
@@ -35,7 +37,9 @@ def countFile(root):
     dict_by_dspath = {}
     dict_by_onlymeta = {}
     dict_by_nomesg = {}
+    # ds_count =0
     for dataset_name in os.listdir(root):
+        # ds_count += 1
         # dataset full path
         dataset_path = os.path.join(root, dataset_name)
 
@@ -71,7 +75,6 @@ def commitCkan(dsp, odtw):
 
     ckmap = map2ckan.mapod2ckan()
     package = ckmap.map(data)
-    # print package
     od_data_path = os.path.dirname(os.path.realpath(dataset_full_path))
     package['basepath'] = od_data_path
     put2ckan = od2ckan.import2ckan()
@@ -90,6 +93,8 @@ if __name__ == "__main__":
 
     root = "./data/"
     (ok_dataset, meta_dataset, nosg_dataset) = countFile(root)
+
+
 
     odtw = odtw.od()
     ## produce normal dataset
@@ -120,3 +125,4 @@ if __name__ == "__main__":
     for ds in list(nosg_dataset.keys()):
         shutil.move(ds, "./done/0")
         logger.error("[0] empty: {}".format(ds))
+

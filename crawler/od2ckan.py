@@ -1,10 +1,10 @@
 #!/bin/python
 # -*- coding: utf-8 -*-
-# encoding=utf8  
+
 import logging
 import os
-import sys
 import time
+import requests
 
 from ckanapi import RemoteCKAN, NotFound, ValidationError, CKANAPIError
 
@@ -19,6 +19,21 @@ logging.basicConfig(filename=LOGGING_FILE,
                     level=logging.INFO,
                     format='%(asctime)s [%(levelname)s] %(filename)s_%(lineno)d  : %(message)s')
 logger = logging.getLogger('root')
+
+
+def downloadFile(URL, rfile):
+
+    response = requests.get(URL, timeout=config.request_timeout , stream=True, verify=False)
+    logger.info("download:" + URL)
+    try:
+        with open(rfile, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=1024):
+                if chunk:  # filter out keep-alive new chunks
+                    f.write(chunk)
+        return True
+    except:
+        logger.error("[ERROR] re-download failed:" + URL)
+        return False
 
 
 class import2ckan():
@@ -43,6 +58,8 @@ class import2ckan():
                 self.resources = package_resources['resources']
                 return True
         return False
+
+
 
     def check_resource(self, testresid):
         for res in self.resources:
@@ -84,17 +101,13 @@ class import2ckan():
             res = {self.package['name']: True}
         except CKANAPIError as e:
             res = {self.package['name']: False}
-            print
-            "CKANAPIError %s\n" % e
-            logger.info("add package %s fail: (%s)" % (self.package['name'], e))
+            logger.error("add package %s fail: (%s)" % (self.package['name'], e))
         except ValidationError as e:
             res = {self.package['name']: False}
-            print
-            "ValidationError %s\n" % e
-            logger.info("add package %s fail: (%s)" % (self.package['name'], e))
+            logger.error("add package %s fail: (%s)" % (self.package['name'], e))
         except:
             res = {self.package['name']: False}
-            logger.info("add package %s fail: (%s)" % (self.package['name'], 'no idea'))
+            logger.error("add package %s fail: (%s)" % (self.package['name'], 'no idea'))
         return res
 
     def add_resource(self):
@@ -130,18 +143,18 @@ class import2ckan():
             #     logger.info("resource %s exist" % res['resourceid'])
             #     continue
 
-            time.sleep(1)
+            # time.sleep(1)
 
             rid = res['resourceid']
             rres[rid] = False
             if os.path.isfile(rfile) == True:
                 logger.info("adding resource %s and upload file %s" % (res['resourceid'], rfile))
             else:
+                #TODO: add download file if not exist
                 # logger.info("file %s not exist or some file error" % rfile)
                 logger.info("file %s not exist, try to download again" % testurl)
-                # local_filename = testurl.split('/')[-1]
-                # rfile = self.package['basepath']+'/'+local_filename
-                # downloadFile(testurl, rfile)
+                if downloadFile(testurl, rfile) is False:
+                    logger.error("[ERROR] re-download error again".format(rfile))
 
             if self.check_resource(res['resourceid'].lower()) == True:
                 logger.info("resource %s exist" % res['resourceid'])
@@ -193,9 +206,9 @@ class import2ckan():
                     logger.info("resource added %s" % res['resourceid'])
                     rres[rid] = True
                 except NotFound:
-                    logger.info("add resource %s fail (name/id not found)" % res['resourceid'])
+                    logger.error("add resource %s fail (name/id not found)" % res['resourceid'])
                 except:
-                    logger.info("add resource %s fail" % res['resourceid'])
+                    logger.error("add resource %s fail" % res['resourceid'])
         return rres
 
     def add_organization(self):

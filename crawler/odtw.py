@@ -53,15 +53,12 @@ class od():
             if k == "distribution":
                 for desc in v:
                     for dk, dv in desc.items():
-                        print
-                        "%30s : %s" % (dk, dv)
+                        print("{} : {}".format(dk, dv))
             elif k == "keyword":
                 for keyword in v:
-                    print
-                    "%30s : %s" % ("keyword", keyword)
+                    print("keyword : {}".format(keyword))
             else:
-                print
-                "%30s : %s" % (k, v)
+                print("{} : {}".format(k, v))
 
     def read(self, odfile):
         rs = self.loadfile(odfile)

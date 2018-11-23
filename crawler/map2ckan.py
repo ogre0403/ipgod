@@ -1,7 +1,7 @@
 #!/bin/python
 # -*- coding: utf-8 -*-
-import hashlib
 import re
+
 import organization_map
 
 
@@ -47,7 +47,6 @@ class mapod2ckan():
                     return
                 elif len(keyword) < 2:
                     keyword = "%s_" % keyword
-                # print "keyword: n%sn" % keyword
                 tagdata = {'name': keyword}
                 self.package['tag'].append(tagdata)
 
