@@ -33,6 +33,7 @@ def showCaculate(dict_by_count):
 
 
 def countFile(root):
+
     dict_by_count = {}
     dict_by_dspath = {}
     dict_by_onlymeta = {}
@@ -67,17 +68,21 @@ def countFile(root):
     return (dict_by_dspath, dict_by_onlymeta, dict_by_nomesg)
 
 
-def commitCkan(dsp, odtw):
+
+def commitCkan(dsp):
+
+    odtwod = odtw.od()
     root_path = dsp
     (root, dataset) = os.path.split(dsp)
     dataset_full_path = os.path.join(root_path, dataset + ".json")
-    data = odtw.read(dataset_full_path)
+    data = odtwod.read(dataset_full_path)
 
     ckmap = map2ckan.mapod2ckan()
     package = ckmap.map(data)
     od_data_path = os.path.dirname(os.path.realpath(dataset_full_path))
     package['basepath'] = od_data_path
     put2ckan = od2ckan.import2ckan()
+    print("package={}".format(package))
     res = put2ckan.commit(package)
     logger.info("[finish] %s" % res)
 
@@ -96,29 +101,30 @@ if __name__ == "__main__":
 
 
 
-    odtw = odtw.od()
+
     ## produce normal dataset
     for ds in list(ok_dataset.keys()):
         # commitCkan(ds, odtw)
         try:
-            commitCkan(ds, odtw)
+            commitCkan(ds)
             time.sleep(1)
             shutil.move(ds, "./done/ok")
             logger.info("[ok] import dataset : {}".format(ds))
-        except:
-            logger.error("[fail] import dataset error: {}".format(ds))
+        except Exception as ex:
+            print(ex)
+            logger.error("[fail] import dataset {} error: {}".format(ds,ex))
             shutil.move(ds, "./done/failed")
 
     ## produce only meta dataset
     for ds in list(meta_dataset.keys()):
         # commitCkan(ds, odtw)
         try:
-            commitCkan(ds, odtw)
+            commitCkan(ds)
             time.sleep(0.5)
             shutil.move(ds, "./done/1")
             logger.info("[1] import meta : {}".format(ds))
-        except:
-            logger.error("[fail] import meta failed: {}".format(ds))
+        except Exception as ex:
+            logger.error("[fail] import meta {} failed: {}".format(ds,ex))
             shutil.move(ds, "./done/failed")
 
     ## produce empty dataset

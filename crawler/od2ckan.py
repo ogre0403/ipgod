@@ -62,13 +62,17 @@ class import2ckan():
 
 
     def check_resource(self, testresid):
+
         for res in self.resources:
-            if res['name'] == testresid:
-                logger.info("resource check: name = resid")
-                return True
-            if testresid in res['url']:
-                logger.info("resource check: resid in url")
-                return True
+            if res['name'] is not None or res['name'] is not "":
+                if res['url'] is not None or res['name'] is not "":
+                    return True
+        #     if res['name'] == testresid:
+        #         logger.info("resource check: name = resid")
+        #         return True
+        #     if testresid in res['url']:
+        #         logger.info("resource check: resid in url")
+        #         return True
 
         return False
 
