@@ -22,8 +22,13 @@ downloader_num = 1
 # log config file to setup python logging
 logging_configure_file = "logging.ini"
 
-# set request timeout limit ( not download time)
+# set request timeout limit ( not download time)(in second)
 request_timeout = 120
+
+# take a rest for ckan (in second)
+timesleep_add_organization = 1
+timesleep_add_dataset = 1
+timesleep_add_resource = 0.5
 
 
 ## [od2ckan]

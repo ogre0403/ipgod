@@ -107,7 +107,6 @@ if __name__ == "__main__":
         # commitCkan(ds, odtw)
         try:
             commitCkan(ds)
-            time.sleep(1)
             shutil.move(ds, "./done/ok")
             logger.info("[ok] import dataset : {}".format(ds))
         except Exception as ex:
@@ -120,7 +119,6 @@ if __name__ == "__main__":
         # commitCkan(ds, odtw)
         try:
             commitCkan(ds)
-            time.sleep(0.5)
             shutil.move(ds, "./done/1")
             logger.info("[1] import meta : {}".format(ds))
         except Exception as ex:

@@ -5,7 +5,6 @@ import logging
 import os
 import time
 import requests
-
 from ckanapi import RemoteCKAN, NotFound, ValidationError, CKANAPIError
 
 import config
@@ -62,18 +61,10 @@ class import2ckan():
 
 
     def check_resource(self, testresid):
-
         for res in self.resources:
             if res['name'] is not None or res['name'] is not "":
                 if res['url'] is not None or res['name'] is not "":
                     return True
-        #     if res['name'] == testresid:
-        #         logger.info("resource check: name = resid")
-        #         return True
-        #     if testresid in res['url']:
-        #         logger.info("resource check: resid in url")
-        #         return True
-
         return False
 
     def check_organization(self):
@@ -103,6 +94,9 @@ class import2ckan():
                 extras=self.package['extras']
             )
             res = {self.package['name']: True}
+            # ckan rest
+            time.sleep(config.timesleep_add_dataset)
+
         except CKANAPIError as e:
             res = {self.package['name']: False}
             logger.error("add package %s fail: (%s)" % (self.package['name'], e))
@@ -115,47 +109,23 @@ class import2ckan():
         return res
 
     def add_resource(self):
-
         rres = {}
-        testpid = self.package['name']
-        # oldRes = findOldPackageRes(testpid)
         for res in self.package['resources']:
 
             testurl = res.get('extras').get('downloadURL')
-            # resourceid = getRIDfromURL(oldRes, testurl)
-            # resourceid = res.get('resourceID')
-            # res['resourceid'] = resourceid
-            # logger.info("get old rid %s" % resourceid)
             if res['resourceid'] == '':
                 logger.error("resourceid not exist {}".form(res['resourcedescription']))
-            # logger.info("dangerous resourceid or new format %s" % (res['resourceid']))
-            #     xurl = testurl
-            #     m = hashlib.md5()
-            #     # m.update(xurl.encode('utf-8'))
-            #     m.update(xurl)
-            #     resourceid = m.hexdigest()
-            #     res['resourceid'] = resourceid
-            #     rid = res['resourceid']
-            #     rres[rid] = False
-            # continue
+
             if 'file' in res:
                 rfile = res['file']
             else:
                 rfile = self.package['basepath'] + '/' + res['resourceid'] + '.' + res['format'].lower()
-
-            # if self.check_resource(res['resourceid'].lower()) == True:
-            #     logger.info("resource %s exist" % res['resourceid'])
-            #     continue
-
-            # time.sleep(1)
 
             rid = res['resourceid']
             rres[rid] = False
             if os.path.isfile(rfile) == True:
                 logger.info("adding resource %s and upload file %s" % (res['resourceid'], rfile))
             else:
-                #TODO: add download file if not exist
-                # logger.info("file %s not exist or some file error" % rfile)
                 logger.info("file %s not exist, try to download again" % testurl)
                 if downloadFile(testurl, rfile) is False:
                     logger.error("[ERROR] re-download error again".format(rfile))
@@ -171,20 +141,8 @@ class import2ckan():
                 ndesc = "資源描述：\n\n"
                 rextras = res['extras']
                 for k, v in rextras.items():
-                    # ndesc = ndesc + k.encode('utf-8') + ":" + v.encode('utf-8') +
                     ndesc = ndesc + k + ":" + v + "\n\n"
-                # print ndesc
-                # resc = self.ckan.action.resource_create(
-                #    package_id=self.package['name'].lower(),
-                #    url=testurl,
-                #    description=ndesc,
-                #    format=res['format'].lower(),
-                #    name=res['resourcedescription'],
-                #    last_modified=res['resourcemodified'],
-                #    upload=open(rfile, 'rb')
-                # )
-                # print resc
-                # rres[rid] = True
+
                 try:
                     if rfile == '':
                         resc = self.ckan.action.resource_create(
@@ -206,6 +164,8 @@ class import2ckan():
                             last_modified=res['resourcemodified'],
                             upload=open(rfile, 'rb'),
                         )
+                    # ckan rest
+                    time.sleep(config.timesleep_add_resource)
                     # print resc
                     logger.info("resource added %s" % res['resourceid'])
                     rres[rid] = True
@@ -216,7 +176,6 @@ class import2ckan():
         return rres
 
     def add_organization(self):
-
         self.ckan.action.organization_create(
         # self.ckan.action.create.organization_create(
             name=self.package['owner_org'],
@@ -224,9 +183,12 @@ class import2ckan():
             extras=self.package['org']['extras'],
             users=[{"name": "admin"}]
         )
+        ## ckan take rest
+        time.sleep(config.timesleep_add_organization)
 
 
     def add_tag(self):
+        # TODO: need implement
         return
 
     def update_organization(self):
@@ -238,6 +200,8 @@ class import2ckan():
             extras=self.package['org']['extras'],
             users=[{"name": "admin"}]
         )
+        ## ckan take rest
+        time.sleep(config.timesleep_add_organization)
         return
 
     def update_package(self):
@@ -258,6 +222,8 @@ class import2ckan():
                 extras=self.package['extras']
             )
             res = {self.package['name']: True}
+            ## ckan take rest
+            time.sleep(config.timesleep_add_dataset)
         except:
             res = {self.package['name']: False}
         return res
@@ -265,7 +231,6 @@ class import2ckan():
     def commit(self, data):
         self.package = data
         ckan_res = {}
-        # print data
         if self.check_organization() == False:
             logger.info("add organization " + self.package['org']['title'])
             self.add_organization()
@@ -275,12 +240,17 @@ class import2ckan():
 
         if self.check_package() == True:
             logger.info("update package and add resources " + self.package['name'])
+            # do insert dataset
             pres = self.update_package()
+            # do insert resource
             rres = self.add_resource()
+
         else:
             logger.info("add package " + self.package['name'])
+            # do insert dataset
             pres = self.add_package()
             logger.info("add resources from package" + self.package['name'])
+            # do insert resource
             rres = self.add_resource()
         ckan_res = {'package': pres, 'resources': rres}
         return ckan_res
