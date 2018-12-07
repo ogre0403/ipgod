@@ -23,12 +23,12 @@ downloader_num = 1
 logging_configure_file = "logging.ini"
 
 # set request timeout limit ( not download time)(in second)
-request_timeout = 120
+request_timeout = 30
 
 # take a rest for ckan (in second)
-timesleep_add_organization = 1
-timesleep_add_dataset = 1
-timesleep_add_resource = 0.5
+timesleep_add_organization = 2
+timesleep_add_dataset = 2
+timesleep_add_resource = 1
 
 
 ## [od2ckan]

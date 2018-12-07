@@ -21,9 +21,14 @@ logger = logging.getLogger('root')
 
 
 def downloadFile(URL, rfile):
-
-    response = requests.get(URL, timeout=config.request_timeout , stream=True, verify=False)
-    logger.info("download:" + URL)
+    # download part
+    try:
+        response = requests.get(URL, timeout=config.request_timeout , stream=True, verify=False)
+        logger.info("download:" + URL)
+    except requests.exceptions.RequestException as e:
+        logger.error("error download:  {}".format(e))
+        return False
+    # save as file
     try:
         with open(rfile, 'wb') as f:
             for chunk in response.iter_content(chunk_size=1024):
@@ -33,6 +38,8 @@ def downloadFile(URL, rfile):
     except:
         logger.error("[ERROR] re-download failed:" + URL)
         return False
+
+
 
 
 class import2ckan():
@@ -141,7 +148,7 @@ class import2ckan():
                 ndesc = "資源描述：\n\n"
                 rextras = res['extras']
                 for k, v in rextras.items():
-                    ndesc = ndesc + k + ":" + v + "\n\n"
+                    ndesc = ndesc + str(k) + ":" + str(v) + "\n\n"
 
                 try:
                     if rfile == '':
