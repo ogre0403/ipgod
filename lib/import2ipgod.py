@@ -7,6 +7,7 @@ from collections import OrderedDict
 import map2ckan
 import od2ckan
 import odtw
+import config
 
 LOGGING_FILE = 'ipgod-od2ckan.log'
 logging.basicConfig(filename=LOGGING_FILE,
@@ -90,13 +91,13 @@ def commitCkan(dsp):
 if __name__ == "__main__":
 
     ##
-    if os.path.isdir("./done/ok") is False:
-        os.makedirs("./done/ok")
-        os.makedirs("./done/0")
-        os.makedirs("./done/1")
-        os.makedirs("./done/failed")
-
-    root = "./data/"
+    #if os.path.isdir("./done/ok") is False:
+    #    os.makedirs("./done/ok")
+    #    os.makedirs("./done/0")
+    #    os.makedirs("./done/1")
+    #    os.makedirs("./done/failed")
+    #root = "./data/"
+    root = config.ROOT_PATH
     (ok_dataset, meta_dataset, nosg_dataset) = countFile(root)
 
 
@@ -107,26 +108,30 @@ if __name__ == "__main__":
         # commitCkan(ds, odtw)
         try:
             commitCkan(ds)
-            shutil.move(ds, "./done/ok")
+            #shutil.move(ds, "./done/ok")
+            shutil.move(ds, config.DONE_PATH+"/ok")
             logger.info("[ok] import dataset : {}".format(ds))
         except Exception as ex:
             print(ex)
             logger.error("[fail] import dataset {} error: {}".format(ds,ex))
-            shutil.move(ds, "./done/failed")
+            shutil.move(ds, config.DONE_PATH+"/failed")
 
     ## produce only meta dataset
     for ds in list(meta_dataset.keys()):
         # commitCkan(ds, odtw)
         try:
             commitCkan(ds)
-            shutil.move(ds, "./done/1")
+            #shutil.move(ds, "./done/1")
+            shutil.move(ds, config.DONE_PATH+"/1")
             logger.info("[1] import meta : {}".format(ds))
         except Exception as ex:
             logger.error("[fail] import meta {} failed: {}".format(ds,ex))
-            shutil.move(ds, "./done/failed")
+            #shutil.move(ds, "./done/failed")
+            shutil.move(ds, config.DONE_PATH+"/failed")
 
     ## produce empty dataset
     for ds in list(nosg_dataset.keys()):
-        shutil.move(ds, "./done/0")
+        #shutil.move(ds, "./done/0")
+        shutil.move(ds, config.DONE_PATH+"/0")
         logger.error("[0] empty: {}".format(ds))
 

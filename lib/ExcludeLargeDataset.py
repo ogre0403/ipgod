@@ -1,13 +1,13 @@
 import os
 from collections import OrderedDict
 import shutil
-
+import config
 
 def exclude_file(root,limit_num):
     dict_count_sum = {}
     dict_ds_count = {}
     dict_largeds_count={}
-    large_dir_path = "./done/large"
+    large_dir_path = config.DONE_PATH+"/large"
     # dataset count from root
     for dataset_name in os.listdir(root):
         dataset_path = os.path.join(root,dataset_name)
@@ -45,5 +45,6 @@ def exclude_file(root,limit_num):
 
 if __name__ == "__main__" :
     resource_threshold = 30
-    root = "./data/"
+    #root = "./data/"
+    root = config.ROOT_PATH
     exclude_file(root,resource_threshold)

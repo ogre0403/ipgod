@@ -1,3 +1,4 @@
+## [crawler] ##
 # control launch crawler.fatchList() or not
 FetchHistory = False
 
@@ -11,10 +12,12 @@ MODIFIED_URL_PREFIX = 'http://data.gov.tw/api/v1/rest/dataset?modified='
 METADATA_URL_PREFIX = 'http://data.gov.tw/api/v1/rest/dataset/'
 
 # the DIR path where data download
-DOWNLOAD_PATH = './data'
+#- DOWNLOAD_PATH = './data' #
+DOWNLOAD_PATH = '/data/ipgod/data'
 
 # the File path where dataset list indicate, if FetchHistory = False, program will only fetch dataset in this file
-LIST_PATH = './list/dataid_list.json'
+#- LIST_PATH = './list/dataid_list.json'
+LIST_PATH = '/data/ipgod/list/dataid_list.json'
 
 # the number of downloader threads
 downloader_num = 1
@@ -26,15 +29,17 @@ logging_configure_file = "logging.ini"
 request_timeout = 30
 
 # take a rest for ckan (in second)
-timesleep_add_organization = 2
-timesleep_add_dataset = 2
-timesleep_add_resource = 1
+timesleep_add_organization = 10
+timesleep_add_dataset = 10
+timesleep_add_resource = 10
 
 
 ## [od2ckan]
 ckanurl="http://ipgod.nchc.org.tw"
 ckan_key="02285f49-a9a7-4809-a42c-a568547511ec"
-root_path="./data"
+#- root_path="./data"
+ROOT_PATH="/data/ipgod/data"
+DONE_PATH="/data/ipgod/done"
 #root_path="/home/thomas/data_download/"
 
 ## deprecated,  Database and table name
