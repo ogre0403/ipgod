@@ -1,5 +1,6 @@
 import json
 import logging
+import logging.config
 import queue
 
 import config
@@ -7,6 +8,9 @@ import Downloader2
 import FetcherList
 
 logger = logging.getLogger(__name__)
+logging.config.fileConfig(config.crawler_logging_configure_file,
+                          defaults=None,
+                          disable_existing_loggers=False)
 
 def fatchList():
     SHARE_Q = queue.Queue()
@@ -41,10 +45,7 @@ def startDownload():
 if __name__ == "__main__":
     # using python logging in multiple modules
     # Ref: http://stackoverflow.com/questions/15727420/using-python-logging-in-multiple-modules
-    import logging.config
-    logging.config.fileConfig(config.logging_configure_file,
-                              defaults=None,
-                              disable_existing_loggers=False)
+
     if config.FetchHistory :
         fatchList()
     startDownload()

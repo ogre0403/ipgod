@@ -1,7 +1,7 @@
 #!/bin/python
 # -*- coding: utf-8 -*-
 import re
-
+import hashlib
 import organization_map
 
 
@@ -81,17 +81,17 @@ class mapod2ckan():
         if key == 'publisher':
             # find organization name, if not, assign dataset id as its english name
             # org = organization_map.organization_name()
-            owner_org = self.org.search(value)
+            ( owner_org_in_zhtw,  owner_org) = self.org.mapping_chiOrg_engOrg(value)
             if owner_org is None :
-                # m = hashlib.md5()
-                # m.update(value)
-                # owner_org = m.hexdigest()[:10]
-                owner_org = str(self.package['name']).lower()
+                m = hashlib.md5()
+                m.update(value)
+                owner_org = m.hexdigest()[:10]
+                # owner_org = str(self.package['name']).lower()
 
             self.package['owner_org'] = owner_org
             self.package['org']['name'] = owner_org
             # self.package['org']['title'] = value.encode('utf-8')
-            self.package['org']['title'] = value
+            self.package['org']['title'] = owner_org_in_zhtw
         else:
             org_extra = {}
             # org_extra['key'] = key.encode('utf-8')

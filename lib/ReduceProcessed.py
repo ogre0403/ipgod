@@ -53,11 +53,8 @@ def queryByRequest(http_str):
 
 if __name__ == "__main__" :
     #    calculate non process dataset
-    #json_path = "./list/dataid_list_2017.json"
-    #datasets_dir = "./data"
-
-    json_path = config.LIST_PATH
-    datasets_dir = config.ROOT_PATH
+    json_path = "./list/dataid_list_2017.json"
+    datasets_dir = "./data"
     ## case 1 : compare dataid_list.json to dir existed
     # src1 = jsonReadDataset(json_path)
     # src2 = listFromDir(datasets_dir)

@@ -36,16 +36,21 @@ class organization_name():
                 odict[org_data] = en
             return odict
 
-    def search(self, keyword):
+    def mapping_chiOrg_engOrg(self, keyword):
         if os.path.isfile(self.mapfile) == False:
             logger.info("organization map(%s) fail" % keyword)
             if os.path.isdir(self.mapfile) is False:
                 raise FileNotFoundError
 
         if keyword in self.org_dict:
-            return self.org_dict[keyword]
+            # keyword "台南市政府" , mapping "tainan_city_government"
+            return (keyword ,self.org_dict[keyword])
         else :
-            False
+            # inverse org_dict list to mapping keyword
+            for org_key in self.org_dict.keys() :
+                if org_key in  keyword :
+                    return ( org_key ,self.org_dict[org_key])
+            return ( keyword, None)
         # with open(self.mapfile, 'r', encoding='utf-8') as govfile:
         #     # spamreader = unicodecsv.reader(govfile, encoding='utf-8')
         #     spamreader = csv.reader(govfile, delimiter=',')

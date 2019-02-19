@@ -51,5 +51,6 @@ class Downloader(threading.Thread):
         logger.info(
             "[Report] Thread {} : total {}, success {}, failed {}"
                 .format(threading.get_ident(), self.count, success,failed))
+
         if failed_list:
             logger.info("[Err] FailedList: {}".format(",".join(failed_list)))
