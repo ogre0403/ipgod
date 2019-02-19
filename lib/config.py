@@ -3,7 +3,8 @@
 FetchHistory = False
 
 # if crawler.fatchList() = True, fetch dataset from History_Time to now
-History_Time = "2018-10-18 11:30:00"
+#History_Time = "2018-10-18 11:30:00"
+History_Time = "2012-12-18 11:30:00"
 
 # the url of data_gov to query UPDATED dataset list
 MODIFIED_URL_PREFIX = 'http://data.gov.tw/api/v1/rest/dataset?modified='

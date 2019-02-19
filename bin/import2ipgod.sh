@@ -6,8 +6,8 @@ export PATH=/opt/anaconda3/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sb
 
 from=$(date +%s)
 
-cd ../lib/
-/opt/anaconda3/bin/python3 ./import2ipgod.py
+cd /data/ipgod/ipgod_git/lib/
+/opt/anaconda3/bin/python3 import2ipgod.py
 
 now=$(date +%s)
 total_time=$(expr $now - $from )

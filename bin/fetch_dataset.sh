@@ -7,7 +7,7 @@ export PATH=/opt/anaconda3/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sb
 from=$(date +%s)
 
 cd /data/ipgod/ipgod_git/lib/
-/opt/anaconda3/bin/python3 crawler.py
+/opt/anaconda3/bin/python3 CountDatasetFiles.py
 
 now=$(date +%s)
 total_time=$(expr $now - $from )
