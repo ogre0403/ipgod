@@ -84,7 +84,8 @@ class mapod2ckan():
             ( owner_org_in_zhtw,  owner_org) = self.org.mapping_chiOrg_engOrg(value)
             if owner_org is None :
                 m = hashlib.md5()
-                m.update(value)
+                encode_value = value.encode('utf-8')
+                m.update(encode_value)
                 owner_org = m.hexdigest()[:10]
                 # owner_org = str(self.package['name']).lower()
 
