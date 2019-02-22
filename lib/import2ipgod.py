@@ -50,7 +50,25 @@ def count_file(root):
             dict_by_dspath[dataset_path] = rs_count
     return (ds_count, dict_by_dspath, dict_by_onlymeta, dict_by_nomesg)
 
-
+def force_recover_move( src_dataset_dir , dst_dir ):
+    try :
+        shutil.move(src_dataset_dir, dst_dir)
+    except Exception as ex:
+        for src_dir, dirs, files in os.walk(src_dataset_dir):
+            dataset_name = os.path.basename(src_dataset_dir)
+            dst_dataset_dir = os.path.join(dst_dir, dataset_name)
+            if not os.path.exists(dst_dataset_dir):
+                os.makedirs(dst_dataset_dir)
+            for file_ in files:
+                src_file = os.path.join(src_dir, file_)
+                dst_file = os.path.join(dst_dataset_dir, file_)
+                if os.path.exists(dst_file):
+                    # in case of the src and dst are the same file
+                    if os.path.samefile(src_file, dst_file):
+                        continue
+                    os.remove(dst_file)
+                shutil.move(src_file, dst_dataset_dir)
+        shutil.rmtree(src_dataset_dir)
 
 def commit_ckan(dsp):
 
@@ -69,27 +87,29 @@ def commit_ckan(dsp):
     res = put2ckan.commit(package)
     logger.info("[finish] %s" % res)
 
-def produce_dataset(target_dataset, destination, empty = False):
-    if empty is True :
-        for ds in list(target_dataset.keys()):
-            shutil.move(ds, config.DONE_PATH+"/" + destination)
-            logger.error("[0] empty: {}".format(ds))
-        return (target_dataset.__len__(), 0)
+def produce_empty_dataset(empty_dataset_list, empty_dir_path):
+    empty_target_path = os.path.join(config.DONE_PATH + "/" + empty_dir_path)
+    for ds_dir_path in list(empty_dataset_list.keys()):
+        force_recover_move(ds_dir_path, empty_target_path)
+        logger.error("[0] empty: {}".format(ds_dir_path))
+    return (empty_dataset_list.__len__(), 0)
 
+def produce_dataset(dataset_path_list, done_flag):
     success_count = 0
     failed_count = 0
-    for ds in list(target_dataset.keys()):
+    for dataset_path in list(dataset_path_list.keys()):
         try:
-            commit_ckan(ds)
-            shutil.move(ds, config.DONE_PATH + "/" + destination)
+            commit_ckan(dataset_path)
+            ds_dst_dir_path = config.DONE_PATH + "/" + done_flag
+            force_recover_move(dataset_path, ds_dst_dir_path)
             success_count += 1
-            logger.info("[{}] import dataset : {}".format(destination, ds))
-
+            logger.info("[{}] import dataset : {}".format(done_flag, dataset_path))
         except Exception as ex:
             failed_count += 1
             traceback.print_exc()
-            logger.exception("[fail] import dataset {} error: {}".format(ds, ex))
-            shutil.move(ds, config.DONE_PATH + "/failed")
+            logger.exception("[fail] import dataset {} error: {}".format(dataset_path, ex))
+            ds_failed_dir_path = config.DONE_PATH + "/failed"
+            force_recover_move(dataset_path, ds_failed_dir_path)
 
     return (success_count, failed_count)
 
@@ -106,7 +126,7 @@ if __name__ == "__main__":
     (meta_count , meta_failed_count) = produce_dataset( meta_dataset, "1")
 
     ## produce empty dataset
-    (empty_count, _ ) = produce_dataset( nosg_dataset, "0" , empty= True)
+    (empty_count, _ ) = produce_empty_dataset( nosg_dataset, "0" )
 
     ## finalize the report of the downloaad thread
     # report  total / add normal_success / normal_fail  /  title_success / title_fail / empty
