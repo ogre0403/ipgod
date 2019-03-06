@@ -2,7 +2,7 @@ from ckanapi import RemoteCKAN
 import time
 import logging.config
 
-LOGGING_FILE = './update_license.log'
+LOGGING_FILE = '../../log/update_license.log'
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s [%(levelname)s] %(filename)s_%(lineno)d  : %(message)s',
@@ -41,6 +41,7 @@ def amend_licenseTitle_licenseURL(dataset_detail_dict):
 def call_ckanapi_updating_ckan(dataset_detail_dict):
     try:
         ipgod.call_action('package_update', dataset_detail_dict)
+        #ipgod.call_action('package_create', dataset_detail_dict)
         result_dict["success_count"] += 1
         logger.info("[success] id ={} ".format(dataset_id))
         return result_dict
@@ -62,12 +63,12 @@ def update_license_info(dataset_id):
     dataset_detail_dict = amend_licenseTitle_licenseURL(dataset_detail_dict)
 
     ## update to ckan
-    time.sleep(5)
+    time.sleep(3)
     return call_ckanapi_updating_ckan(dataset_detail_dict)
 
 if __name__ == "__main__" :
-    data_list=[ '054c130d-c887-4486-8183-b2f53d9e5fb4', '05d07aca-dee8-43d5-a596-cc0da1a71c8f']
-    # data_list = ipgod.call_action('package_list', {})
+    #data_list=[ '054c130d-c887-4486-8183-b2f53d9e5fb4', '05d07aca-dee8-43d5-a596-cc0da1a71c8f']
+    data_list = ipgod.call_action('package_list', {})
 
     result_dict["total_count"] = len(data_list)
 
