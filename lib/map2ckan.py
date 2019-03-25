@@ -8,8 +8,8 @@ import organization_map
 class mapod2ckan():
     def __init__(self):
         self.package = {'groups': [], 'extras': [], 'tag': [], 'resources': [], 'org': {'extras': []}}
-        self.license_id = '1'
-        self.license_url = 'http'
+        self.license_id = 'Open-Government-Data'
+        self.license_url = "https://data.gov.tw/license"
         self.org = organization_map.organization_name()
 
     def map_package_params(self, key, value):
@@ -17,17 +17,6 @@ class mapod2ckan():
 
     def map_tag_params(self, key, value):
         for keyword in value:
-            # mark for create vocabulary tags
-            #    testkeyword = keyword.encode('utf-8')
-            #    if testkeyword.isalpha() == True:
-            #	testkeyword = testkeyword.lower()
-            #	testkeyword = testkeyword.replace(" ", "_")
-            #	tagdata={'name':testkeyword.lower()}
-            #	self.package['tag'].append(tagdata)
-            #    else:
-            #	tagdata={'name':testkeyword}
-            #	self.package['tag'].append(tagdata)
-            # and thsi is free tags
             values = re.split(",", keyword)
             if len(values) > 1:
                 self.map_tag_params("keyword", values)
@@ -105,10 +94,8 @@ class mapod2ckan():
     def map_package_extras(self, key, value):
         if key == 'notes':
             key = "extra note"
-
         if key == 'type':
             key = "data type"
-
         # print "key %s value b%sb" % (key, value)
         if type(value) is int:
             data = value
@@ -117,9 +104,7 @@ class mapod2ckan():
         elif type(value) is list or type(value) is tuple:
             data = ''.join(str(e) for e in value)
         else:
-            # data = value.encode('utf-8')
             data = value
-
         extra = {}
         # extra['key'] = key.encode('utf-8')
         extra['key'] = key
@@ -142,6 +127,25 @@ class mapod2ckan():
                     resource['extras'][rk] = rv
             self.package['resources'].append(resource)
 
+    def add_license_extras(self):
+        ''' ## update the license information  ## 20190325
+                extra = {}
+                extra['key'] = key
+                extra['value'] = data
+                self.package['extras'].append(extra)
+                '''
+        check_license_title_existed = False
+        for i in self.package["extras"]:
+            if i["key"] == "cost":
+                i["value"] = "免費"
+            if i["key"] == "licenseURL":
+                i["value"] = "https://data.gov.tw/license"
+            if i["key"] == "license_title":
+                check_license_title_existed = True
+        if check_license_title_existed is False:
+            self.package["extras"].append({"key": "license_title",
+                                           "value": "政府資料開放授權條款－第1版"})
+
     def map(self, data):
         rs = data
         for k, v in rs.items():
@@ -151,8 +155,6 @@ class mapod2ckan():
                 self.map_package_params('name', v)
             elif k == 'description':
                 self.map_package_params('notes', v)
-            # elif k == 'type':
-            #		self.map_package_params('type', v)
             elif k == 'modified':
                 self.map_package_params('last_modified', v)
             elif k == 'license':
@@ -189,4 +191,8 @@ class mapod2ckan():
                 continue
             else:
                 self.map_package_extras(k, v)
+        self.add_license_extras()
+
         return self.package
+
+
