@@ -60,4 +60,4 @@ if __name__ == "__main__":
         historyFetcher.processExclude()
     else:
         pass
-    # startDownload()
+    startDownload()
