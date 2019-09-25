@@ -38,7 +38,7 @@ timesleep_add_resource = 10
 
 ## [od2ckan]
 ckanurl="http://ipgod.nchc.org.tw"
-ckan_key="02285f49-a9a7-4809-a42c-a568547511ec"
+ckan_key="xxxxxxxxxxxxxxxx"
 ROOT_PATH="../ROOT/data"
 # ROOT_PATH="/data/ipgod/data"
 DONE_PATH="../ROOT/done"
